@@ -12,7 +12,7 @@ CORS = {
 }
 
 DEEPSEEK_KEY = os.environ.get('DEEPSEEK_API_KEY', '')
-GROQ_KEY = os.environ.get('GROQ_API_KEY', '')
+GROQ_KEY = os.environ.get('GROQ_API_KEY', '') or os.environ.get('API_KEY', '')
 
 PROVIDERS = []
 if DEEPSEEK_KEY:
