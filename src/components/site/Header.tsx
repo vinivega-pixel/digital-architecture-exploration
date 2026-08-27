@@ -32,7 +32,7 @@ const Logo = () => (
 
 const Header = () => {
   const { user, premium } = useAuth();
-  const { openAuth, openAccount } = useUi();
+  const { openAuth, openAccount, openOffer } = useUi();
   const [open, setOpen] = useState(false);
   const [qr, setQr] = useState(false);
   const [info, setInfo] = useState(false);
@@ -86,6 +86,14 @@ const Header = () => {
             <Icon name="Info" size={21} />
           </button>
           <button
+            onClick={openOffer}
+            aria-label="Публичная оферта"
+            title="Публичная оферта"
+            className="text-primary transition-opacity hover:opacity-70"
+          >
+            <Icon name="FileText" size={21} />
+          </button>
+          <button
             onClick={() => setQr(true)}
             aria-label="QR-код и ссылка на сайт"
             title="QR-код и ссылка"
@@ -122,6 +130,13 @@ const Header = () => {
           className="ml-auto text-primary xl:hidden"
         >
           <Icon name="Info" size={23} />
+        </button>
+        <button
+          onClick={openOffer}
+          aria-label="Публичная оферта"
+          className="ml-4 text-primary xl:hidden"
+        >
+          <Icon name="FileText" size={23} />
         </button>
         <button
           onClick={() => setQr(true)}

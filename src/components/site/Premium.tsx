@@ -62,7 +62,7 @@ const SERVICES = [
 
 const Premium = () => {
   const { user, premium, startPayment } = useAuth();
-  const { openAuth, openAccount } = useUi();
+  const { openAuth, openAccount, openOffer } = useUi();
   const [plan, setPlan] = useState('day');
 
   useEffect(() => {
@@ -79,9 +79,14 @@ const Premium = () => {
     return () => window.removeEventListener('select-plan', onSelect);
   }, []);
   const [busy, setBusy] = useState(false);
+  const [agree, setAgree] = useState(false);
   const [note, setNote] = useState<string | null>(null);
 
   const pay = async () => {
+    if (!agree) {
+      setNote('Подтвердите ознакомление с условиями публичной оферты');
+      return;
+    }
     if (!user) {
       openAuth('register');
       return;
@@ -193,20 +198,49 @@ const Premium = () => {
                 <button
                   type="button"
                   onClick={pay}
-                  disabled={busy}
-                  className="flex shrink-0 items-center justify-center gap-2 bg-primary px-8 py-4 text-[0.78rem] font-medium uppercase tracking-[0.12em] text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+                  disabled={busy || !agree}
+                  className="flex shrink-0 items-center justify-center gap-2 bg-primary px-8 py-4 text-[0.78rem] font-medium uppercase tracking-[0.12em] text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-40"
                 >
                   <Icon name="CreditCard" size={16} />
                   {user ? 'Оплатить премиум' : 'Создать аккаунт и оплатить'}
                 </button>
               </div>
             )}
+
+            {!premium && (
+              <label className="mt-5 flex cursor-pointer items-start gap-3 border border-border px-4 py-3.5">
+                <input
+                  type="checkbox"
+                  checked={agree}
+                  onChange={(e) => {
+                    setAgree(e.target.checked);
+                    if (e.target.checked) setNote(null);
+                  }}
+                  className="mt-0.5 h-4 w-4 shrink-0 accent-primary"
+                />
+                <span className="text-[0.82rem] leading-relaxed text-muted-foreground">
+                  С условиями{' '}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      openOffer();
+                    }}
+                    className="link-underline text-primary"
+                  >
+                    публичной оферты
+                  </button>{' '}
+                  ознакомлен и согласен
+                </span>
+              </label>
+            )}
             {note && (
               <p className="mt-4 border border-border px-4 py-3 text-[0.82rem] text-foreground">{note}</p>
             )}
             <p className="mt-5 text-[0.72rem] leading-relaxed text-muted-foreground">
               Оформляя подписку, вы соглашаетесь на обработку адреса электронной почты в соответствии с ФЗ-152 «О
-              персональных данных». Условия доступа не являются публичной офертой (ст. 437 ГК РФ).
+              персональных данных». Намерение приобрести услугу является подтверждением согласия с условиями
+              публичной оферты.
             </p>
           </div>
         </Reveal>
