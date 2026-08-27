@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import Icon from '@/components/ui/icon';
 import { useAuth } from '@/context/AuthContext';
 import { useUi } from '@/context/UiContext';
+import ShareQr from './ShareQr';
+import InfoModal from './InfoModal';
 
 export const NAV = [
   { id: 'uchastok', label: 'Участок' },
@@ -32,6 +34,8 @@ const Header = () => {
   const { user, premium } = useAuth();
   const { openAuth, openAccount } = useUi();
   const [open, setOpen] = useState(false);
+  const [qr, setQr] = useState(false);
+  const [info, setInfo] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -73,6 +77,22 @@ const Header = () => {
           <Logo />
         </button>
         <div className="ml-auto hidden items-center gap-3 xl:flex">
+          <button
+            onClick={() => setInfo(true)}
+            aria-label="Как работает институт"
+            title="Как работает институт"
+            className="text-primary transition-opacity hover:opacity-70"
+          >
+            <Icon name="Info" size={21} />
+          </button>
+          <button
+            onClick={() => setQr(true)}
+            aria-label="QR-код и ссылка на сайт"
+            title="QR-код и ссылка"
+            className="text-primary transition-opacity hover:opacity-70"
+          >
+            <Icon name="QrCode" size={21} />
+          </button>
           {user ? (
             <button
               onClick={openAccount}
@@ -97,9 +117,23 @@ const Header = () => {
           </button>
         </div>
         <button
+          onClick={() => setInfo(true)}
+          aria-label="Как работает институт"
+          className="ml-auto text-primary xl:hidden"
+        >
+          <Icon name="Info" size={23} />
+        </button>
+        <button
+          onClick={() => setQr(true)}
+          aria-label="QR-код и ссылка"
+          className="ml-4 text-primary xl:hidden"
+        >
+          <Icon name="QrCode" size={23} />
+        </button>
+        <button
           onClick={() => (user ? openAccount() : openAuth('login'))}
           aria-label={user ? 'Личный кабинет' : 'Войти'}
-          className="ml-auto text-primary xl:hidden"
+          className="ml-4 text-primary xl:hidden"
         >
           <Icon name={user ? (premium ? 'ShieldCheck' : 'User') : 'LogIn'} size={24} />
         </button>
@@ -128,6 +162,9 @@ const Header = () => {
           </button>
         </div>
       )}
+
+      <ShareQr open={qr} onClose={() => setQr(false)} />
+      <InfoModal open={info} onClose={() => setInfo(false)} />
     </>
   );
 };

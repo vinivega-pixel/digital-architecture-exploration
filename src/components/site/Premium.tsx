@@ -66,6 +66,11 @@ const Premium = () => {
   const [plan, setPlan] = useState('day');
 
   useEffect(() => {
+    const fromUrl = new URLSearchParams(window.location.search).get('plan');
+    if (fromUrl && PLANS.some((p) => p.id === fromUrl)) setPlan(fromUrl);
+  }, []);
+
+  useEffect(() => {
     const onSelect = (e: Event) => {
       const id = (e as CustomEvent<string>).detail;
       if (id) setPlan(id);
