@@ -7,6 +7,7 @@ import OfferModal from './OfferModal';
 import { stageExtras } from '@/data/stageExtras';
 import { extraCalcs } from '@/data/extraCalcs';
 import { formulaCalcs } from '@/data/formulaCalcs';
+import { useAuth } from '@/context/AuthContext';
 import type { Stage } from '@/data/stages';
 
 const nf = (v: number) => new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(v);
@@ -47,6 +48,7 @@ const PRODUCTS = [
 ];
 
 const PremiumPanel = ({ stage }: { stage: Stage }) => {
+  const { premium } = useAuth();
   const { palette, offer } = stage;
   const bg = palette.rightBg;
   const fg = palette.rightFg;
@@ -77,24 +79,35 @@ const PremiumPanel = ({ stage }: { stage: Stage }) => {
       </div>
 
       <p className="mt-4 text-[0.78rem] leading-relaxed" style={{ color: `${fg}b0` }}>
-        Первые три раздела открываются по подписке. Разработка проектов — отдельно, подписка для заказа не нужна.
+        {premium
+          ? 'Премиум-доступ активен: все разделы открыты. Разработка проектов оплачивается отдельно.'
+          : 'Первые три раздела открываются по подписке. Разработка проектов — отдельно, подписка для заказа не нужна.'}
       </p>
 
       <div className="mt-5 space-y-3">
-        <Disclosure icon="MessagesSquare" label="ИИ-агент ведёт диалог" count={0} fg={fg} locked>
-          <AiChat stagePhase={stage.phase} fg={fg} bg={bg} />
-          <button
-            type="button"
-            onClick={goPremium}
-            className="mt-4 flex w-full items-center justify-center gap-2 px-5 py-3 text-[0.74rem] font-medium uppercase tracking-[0.12em]"
-            style={{ background: fg, color: bg }}
-          >
-            <Icon name="Sparkles" size={15} />
-            Подключить премиум
-          </button>
+        <Disclosure icon="MessagesSquare" label="ИИ-агент ведёт диалог" count={0} fg={fg} locked={!premium}>
+          {premium ? (
+            <AiChat stagePhase={stage.phase} fg={fg} bg={bg} />
+          ) : (
+            <p className="text-[0.82rem] leading-relaxed" style={{ color: `${fg}b5` }}>
+              Живой диалог с инженером-консультантом по этапу: задаёт вопросы об объекте, разбирает ваши исходные
+              документы, находит противоречия и нехватку данных. Открывается по подписке.
+            </p>
+          )}
+          {!premium && (
+            <button
+              type="button"
+              onClick={goPremium}
+              className="mt-4 flex w-full items-center justify-center gap-2 px-5 py-3 text-[0.74rem] font-medium uppercase tracking-[0.12em]"
+              style={{ background: fg, color: bg }}
+            >
+              <Icon name="Sparkles" size={15} />
+              Подключить премиум
+            </button>
+          )}
         </Disclosure>
 
-        <Disclosure icon="FileCheck" label="Готовые документы" count={docsTotal} fg={fg} locked>
+        <Disclosure icon="FileCheck" label="Готовые документы" count={docsTotal} fg={fg} locked={!premium}>
           <p className="font-display text-lg leading-tight" style={{ color: fg }}>
             Готовый проект документов по этапу
           </p>
@@ -125,28 +138,39 @@ const PremiumPanel = ({ stage }: { stage: Stage }) => {
             Срок изготовления — 8–12 часов
           </p>
 
-          <button
-            type="button"
-            onClick={goPremium}
-            className="mt-4 flex w-full items-center justify-center gap-2 px-5 py-3 text-[0.74rem] font-medium uppercase tracking-[0.12em]"
-            style={{ background: fg, color: bg }}
-          >
-            <Icon name="Sparkles" size={15} />
-            Подключить премиум
-          </button>
+          {!premium && (
+            <button
+              type="button"
+              onClick={goPremium}
+              className="mt-4 flex w-full items-center justify-center gap-2 px-5 py-3 text-[0.74rem] font-medium uppercase tracking-[0.12em]"
+              style={{ background: fg, color: bg }}
+            >
+              <Icon name="Sparkles" size={15} />
+              Подключить премиум
+            </button>
+          )}
         </Disclosure>
 
-        <Disclosure icon="ShieldCheck" label="Автопроверка по нормам" count={0} fg={fg} locked>
-          <NormCheck stagePhase={stage.phase} fg={fg} bg={bg} />
-          <button
-            type="button"
-            onClick={goPremium}
-            className="mt-4 flex w-full items-center justify-center gap-2 px-5 py-3 text-[0.74rem] font-medium uppercase tracking-[0.12em]"
-            style={{ background: fg, color: bg }}
-          >
-            <Icon name="Sparkles" size={15} />
-            Подключить премиум
-          </button>
+        <Disclosure icon="ShieldCheck" label="Автопроверка по нормам" count={0} fg={fg} locked={!premium}>
+          {premium ? (
+            <NormCheck stagePhase={stage.phase} fg={fg} bg={bg} />
+          ) : (
+            <p className="text-[0.82rem] leading-relaxed" style={{ color: `${fg}b5` }}>
+              Задаёте вопрос по нормам — получаете ответ с юридическим обоснованием: конкретный свод правил, ГОСТ или
+              статья кодекса и что это значит для проекта. Открывается по подписке.
+            </p>
+          )}
+          {!premium && (
+            <button
+              type="button"
+              onClick={goPremium}
+              className="mt-4 flex w-full items-center justify-center gap-2 px-5 py-3 text-[0.74rem] font-medium uppercase tracking-[0.12em]"
+              style={{ background: fg, color: bg }}
+            >
+              <Icon name="Sparkles" size={15} />
+              Подключить премиум
+            </button>
+          )}
         </Disclosure>
 
         <Disclosure icon="Cpu" label="Цифровые продукты" count={PRODUCTS.length} fg={fg}>

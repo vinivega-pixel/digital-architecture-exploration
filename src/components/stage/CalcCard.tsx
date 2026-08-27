@@ -1,11 +1,13 @@
 import { useMemo, useState } from 'react';
 import Icon from '@/components/ui/icon';
 import printDoc from '@/lib/printDoc';
+import { useAuth } from '@/context/AuthContext';
 import type { Calc, Palette } from '@/data/stages';
 
 type Props = { calc: Calc; palette: Palette; stageTitle: string };
 
 const CalcCard = ({ calc, palette, stageTitle }: Props) => {
+  const { trackDownload } = useAuth();
   const [vals, setVals] = useState<Record<string, number>>(() =>
     Object.fromEntries(calc.fields.map((f) => [f.key, f.def])),
   );
@@ -17,8 +19,9 @@ const CalcCard = ({ calc, palette, stageTitle }: Props) => {
     setVals((prev) => ({ ...prev, [key]: Number.isFinite(n) ? n : 0 }));
   };
 
-  const download = () =>
-    printDoc({
+  const download = () => {
+    trackDownload('calc', calc.title, stageTitle);
+    return printDoc({
       docTitle: `Расчёт — ${calc.title}`,
       heading: calc.title,
       subheading: `${stageTitle} · ${calc.note}`,
@@ -36,6 +39,7 @@ const CalcCard = ({ calc, palette, stageTitle }: Props) => {
           }</div>`
         : undefined,
     });
+  };
 
   return (
     <div className="border p-5 md:p-6" style={{ borderColor: `${fg}33`, background: `${fg}0a` }}>

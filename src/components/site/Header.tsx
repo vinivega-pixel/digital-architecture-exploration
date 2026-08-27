@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import Icon from '@/components/ui/icon';
+import { useAuth } from '@/context/AuthContext';
+import { useUi } from '@/context/UiContext';
 
 export const NAV = [
   { id: 'uchastok', label: 'Участок' },
@@ -27,6 +29,8 @@ const Logo = () => (
 );
 
 const Header = () => {
+  const { user, premium } = useAuth();
+  const { openAuth, openAccount } = useUi();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -68,13 +72,38 @@ const Header = () => {
         >
           <Logo />
         </button>
+        <div className="ml-auto hidden items-center gap-3 xl:flex">
+          {user ? (
+            <button
+              onClick={openAccount}
+              className="flex items-center gap-2 border border-primary px-5 py-[14px] text-[0.78rem] font-medium uppercase tracking-[0.1em] text-primary transition-colors duration-300 hover:bg-primary hover:text-primary-foreground"
+            >
+              <Icon name={premium ? 'ShieldCheck' : 'User'} size={15} />
+              {premium ? 'Премиум активен' : 'Кабинет'}
+            </button>
+          ) : (
+            <button
+              onClick={() => openAuth('login')}
+              className="link-underline text-[0.82rem] font-medium uppercase tracking-[0.1em] text-primary"
+            >
+              Войти
+            </button>
+          )}
+          <button
+            onClick={() => go('premium')}
+            className="border border-primary px-[26px] py-[15px] text-[0.8rem] font-medium uppercase tracking-[0.12em] text-primary transition-colors duration-300 hover:bg-primary hover:text-primary-foreground"
+          >
+            Премиум
+          </button>
+        </div>
         <button
-          onClick={() => go('premium')}
-          className="ml-auto hidden border border-primary px-[30px] py-[17px] text-[0.82rem] font-medium uppercase tracking-[0.12em] text-primary transition-colors duration-300 hover:bg-primary hover:text-primary-foreground xl:inline-block"
+          onClick={() => (user ? openAccount() : openAuth('login'))}
+          aria-label={user ? 'Личный кабинет' : 'Войти'}
+          className="ml-auto text-primary xl:hidden"
         >
-          Премиум
+          <Icon name={user ? (premium ? 'ShieldCheck' : 'User') : 'LogIn'} size={24} />
         </button>
-        <button onClick={() => setOpen((v) => !v)} aria-label="Меню" className="ml-auto text-primary xl:hidden">
+        <button onClick={() => setOpen((v) => !v)} aria-label="Меню" className="ml-4 text-primary xl:hidden">
           <Icon name={open ? 'X' : 'Menu'} size={26} />
         </button>
       </header>

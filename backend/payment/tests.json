@@ -1,0 +1,35 @@
+{
+  "tests": [
+    {
+      "name": "CORS preflight",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Список тарифов",
+      "method": "GET",
+      "path": "/?action=plans",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Создание счёта без входа отклоняется",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "action": "create",
+        "plan": "year"
+      },
+      "expectedStatus": 401
+    },
+    {
+      "name": "Статус подписки без входа отклоняется",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "action": "status"
+      },
+      "expectedStatus": 401
+    }
+  ]
+}

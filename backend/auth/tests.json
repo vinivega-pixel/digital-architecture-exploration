@@ -1,0 +1,30 @@
+{
+  "tests": [
+    {
+      "name": "CORS preflight",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Профиль без токена отклоняется",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 401
+    },
+    {
+      "name": "Регистрация с плохой почтой отклоняется",
+      "method": "POST",
+      "path": "/",
+      "body": { "action": "register", "email": "not-an-email", "password": "123456" },
+      "expectedStatus": 400
+    },
+    {
+      "name": "Вход с неверными данными отклоняется",
+      "method": "POST",
+      "path": "/",
+      "body": { "action": "login", "email": "nobody@example.com", "password": "wrongpass" },
+      "expectedStatus": 401
+    }
+  ]
+}

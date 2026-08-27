@@ -8,9 +8,11 @@ import { resolveNorm } from '@/data/normLinks';
 import { stageExtras } from '@/data/stageExtras';
 import { extraCalcs } from '@/data/extraCalcs';
 import { formulaCalcs } from '@/data/formulaCalcs';
+import { useAuth } from '@/context/AuthContext';
 import type { Stage } from '@/data/stages';
 
 const FreePanel = ({ stage }: { stage: Stage }) => {
+  const { trackDownload } = useAuth();
   const { palette } = stage;
   const bg = palette.leftBg;
   const fg = palette.leftFg;
@@ -22,6 +24,7 @@ const FreePanel = ({ stage }: { stage: Stage }) => {
   const active = calcs.find((c) => c.id === openCalc);
 
   const downloadTemplate = (title: string) => {
+    trackDownload('template', title, stage.phase);
     const form = findDocForm(title);
     printDoc({
       docTitle: title,

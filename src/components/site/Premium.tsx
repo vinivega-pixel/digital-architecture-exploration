@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import Icon from '@/components/ui/icon';
 import Reveal from './Reveal';
+import { useAuth } from '@/context/AuthContext';
+import { useUi } from '@/context/UiContext';
 
 const PLANS = [
   { id: 'month', name: 'Месяц', price: '4 900 ₽', period: 'в месяц', items: ['Все калькуляторы с выгрузкой PDF', 'База шаблонов и норм', 'Офлайн-программы HTML'] },
@@ -9,9 +11,23 @@ const PLANS = [
 ];
 
 const Premium = () => {
-  const [email, setEmail] = useState('');
+  const { user, premium, startPayment } = useAuth();
+  const { openAuth, openAccount } = useUi();
   const [plan, setPlan] = useState('year');
-  const [sent, setSent] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [note, setNote] = useState<string | null>(null);
+
+  const pay = async () => {
+    if (!user) {
+      openAuth('register');
+      return;
+    }
+    setBusy(true);
+    setNote(null);
+    const res = await startPayment(plan);
+    setBusy(false);
+    if (!res.ok) setNote(res.message ?? 'Не удалось перейти к оплате');
+  };
 
   return (
     <section id="premium" className="scroll-mt-16 border-t border-border bg-background py-20">
@@ -61,43 +77,47 @@ const Premium = () => {
 
         <Reveal>
           <div className="mt-10 border border-border bg-card p-7 md:p-10">
-            {sent ? (
+            {premium ? (
               <div className="flex items-start gap-3">
-                <Icon name="MailCheck" size={22} className="mt-0.5 shrink-0 text-primary" />
+                <Icon name="ShieldCheck" size={22} className="mt-0.5 shrink-0 text-primary" />
                 <div>
-                  <p className="font-display text-xl text-foreground">Ссылка на оплату уйдёт письмом</p>
+                  <p className="font-display text-xl text-foreground">Премиум-доступ активен</p>
                   <p className="mt-2 text-[0.88rem] text-muted-foreground">
-                    Отправим на {email} счёт и доступ к премиум-стороне.
+                    Все разделы открыты. Срок действия и историю расчётов видно в личном кабинете.
                   </p>
+                  <button
+                    type="button"
+                    onClick={openAccount}
+                    className="link-underline mt-3 text-[0.86rem] text-primary"
+                  >
+                    Открыть личный кабинет
+                  </button>
                 </div>
               </div>
             ) : (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setSent(true);
-                }}
-                className="flex flex-col gap-4 sm:flex-row sm:items-end"
-              >
-                <label className="flex-1">
-                  <span className="rubric">Почта для доступа</span>
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@company.ru"
-                    className="mt-2 w-full border border-border bg-transparent px-4 py-3.5 text-sm text-foreground outline-none focus:border-primary"
-                  />
-                </label>
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="rubric">Выбран тариф</p>
+                  <p className="mt-1 font-display text-xl text-foreground">
+                    {PLANS.find((p) => p.id === plan)?.name} — {PLANS.find((p) => p.id === plan)?.price}
+                  </p>
+                  <p className="mt-1 text-[0.8rem] text-muted-foreground">
+                    {user ? 'Оплата через Робокассу, доступ откроется сразу после платежа.' : 'Создайте аккаунт — займёт минуту, оплата сразу после.'}
+                  </p>
+                </div>
                 <button
-                  type="submit"
-                  className="flex items-center justify-center gap-2 bg-primary px-8 py-4 text-[0.78rem] font-medium uppercase tracking-[0.12em] text-primary-foreground transition-opacity hover:opacity-90"
+                  type="button"
+                  onClick={pay}
+                  disabled={busy}
+                  className="flex shrink-0 items-center justify-center gap-2 bg-primary px-8 py-4 text-[0.78rem] font-medium uppercase tracking-[0.12em] text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
                 >
                   <Icon name="CreditCard" size={16} />
-                  Оплатить премиум
+                  {user ? 'Оплатить премиум' : 'Создать аккаунт и оплатить'}
                 </button>
-              </form>
+              </div>
+            )}
+            {note && (
+              <p className="mt-4 border border-border px-4 py-3 text-[0.82rem] text-foreground">{note}</p>
             )}
             <p className="mt-5 text-[0.72rem] leading-relaxed text-muted-foreground">
               Оформляя подписку, вы соглашаетесь на обработку адреса электронной почты в соответствии с ФЗ-152 «О
