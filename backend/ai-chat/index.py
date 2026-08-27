@@ -11,6 +11,12 @@ CORS = {
     'Content-Type': 'application/json',
 }
 
+DEEPSEEK_KEY = os.environ.get('DEEPSEEK_API_KEY', '')
+GROQ_KEY = os.environ.get('GROQ_API_KEY', '')
+USE_DEEPSEEK = bool(DEEPSEEK_KEY)
+API_URL = 'https://api.deepseek.com/chat/completions' if USE_DEEPSEEK else 'https://api.groq.com/openai/v1/chat/completions'
+MODEL = 'deepseek-chat' if USE_DEEPSEEK else 'llama-3.3-70b-versatile'
+
 SYSTEM = (
     'Ты — инженер-консультант цифрового института «ЦИФРА». Помогаешь по этапу строительного проекта. '
     'Отвечай по-русски, кратко и по делу, ссылайся на действующие нормы РФ (СП, ГОСТ, ГрК РФ, ПП РФ № 87). '
@@ -41,7 +47,7 @@ def handler(event: dict, context) -> dict:
     system = SYSTEM + (f' Текущий этап проекта: «{stage}».' if stage else '')
 
     payload = {
-        'model': 'llama-3.3-70b-versatile',
+        'model': MODEL,
         'messages': [{'role': 'system', 'content': system}] + [
             {'role': m.get('role', 'user'), 'content': str(m.get('content', ''))[:4000]} for m in messages
         ],
@@ -49,20 +55,19 @@ def handler(event: dict, context) -> dict:
         'max_tokens': 700,
     }
 
-    key = os.environ.get('GROQ_API_KEY', '')
+    key = DEEPSEEK_KEY or GROQ_KEY
     if not key:
         return {
             'statusCode': 200,
             'headers': CORS,
             'body': json.dumps({
-                'reply': 'Чат ещё не активирован: не добавлен ключ доступа к языковой модели. '
-                         'Добавьте секрет GROQ_API_KEY в настройках проекта — и агент заработает.',
+                'reply': 'Чат ещё не активирован: не добавлен ключ доступа к языковой модели. Добавьте секрет DEEPSEEK_API_KEY в настройках проекта — и агент заработает.',
                 'configured': False,
             }, ensure_ascii=False),
         }
 
     req = urllib.request.Request(
-        'https://api.groq.com/openai/v1/chat/completions',
+        API_URL,
         data=json.dumps(payload).encode('utf-8'),
         headers={'Content-Type': 'application/json', 'Authorization': f'Bearer {key}'},
         method='POST',
@@ -74,6 +79,12 @@ def handler(event: dict, context) -> dict:
         reply = data['choices'][0]['message']['content']
     except urllib.error.HTTPError as e:
         detail = e.read().decode('utf-8')[:300]
+        if e.code in (401, 402, 403):
+            return {
+                'statusCode': 200,
+                'headers': CORS,
+                'body': json.dumps({'reply': 'Агент временно недоступен: ключ доступа к языковой модели не принят. Проверьте секрет DEEPSEEK_API_KEY в настройках проекта.', 'configured': False}, ensure_ascii=False),
+            }
         return {'statusCode': 502, 'headers': CORS, 'body': json.dumps({'error': 'llm_error', 'detail': detail}, ensure_ascii=False)}
     except Exception as e:
         return {'statusCode': 502, 'headers': CORS, 'body': json.dumps({'error': 'llm_unavailable', 'detail': str(e)[:200]}, ensure_ascii=False)}
