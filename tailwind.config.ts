@@ -64,9 +64,9 @@ export default {
 				}
 			},
 			fontFamily: {
-				display: ['Oswald', 'Impact', 'sans-serif'],
-				body: ['"Golos Text"', 'system-ui', 'sans-serif'],
-				mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace']
+				display: ['"Playfair Display"', 'Georgia', 'serif'],
+				body: ['Jost', 'system-ui', 'sans-serif'],
+				mono: ['ui-monospace', 'SFMono-Regular', 'monospace']
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -121,12 +121,17 @@ export default {
 				'float-slow': {
 					'0%, 100%': { transform: 'translateY(0)' },
 					'50%': { transform: 'translateY(-14px)' }
+				},
+				'rise': {
+					from: { opacity: '0', transform: 'scale(1.05)' },
+					to: { opacity: '1', transform: 'none' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'fade-in': 'fade-in 0.6s ease-out forwards',
+				'fade-in': 'fade-in 1.1s ease-out both',
+				'rise': 'rise 1.4s ease-out both',
 				'fade-out': 'fade-out 0.3s ease-out forwards',
 				'scale-in': 'scale-in 0.25s ease-out forwards',
 				'scale-out': 'scale-out 0.2s ease-out forwards',

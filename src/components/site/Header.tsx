@@ -1,35 +1,37 @@
 import { useEffect, useState } from 'react';
 import Icon from '@/components/ui/icon';
-import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { scrollToId } from '@/hooks/use-reveal';
 
-const NAV = [
-  { id: 'map', label: 'Маршруты' },
-  { id: 'design', label: 'Проектирование' },
-  { id: 'automation', label: 'Автоматизация' },
-  { id: 'products', label: 'Продукты' },
-  { id: 'calculators', label: 'Калькуляторы' },
-  { id: 'twin', label: 'Цифровой двойник' },
-  { id: 'about', label: 'О нас' },
+export const NAV = [
+  { id: 'uchastok', label: 'Участок' },
+  { id: 'izyskaniya', label: 'Изыскания' },
+  { id: 'pd', label: 'Проектная документация' },
+  { id: 'arkr', label: 'АР и КР' },
+  { id: 'eom', label: 'Электроснабжение' },
+  { id: 'vk', label: 'Водоснабжение' },
+  { id: 'ovik', label: 'ОВиК' },
+  { id: 'ss', label: 'Безопасность' },
+  { id: 'roof', label: 'Кровля' },
+  { id: 'blago', label: 'Благоустройство' },
+  { id: 'priemka', label: 'Приёмка' },
+  { id: 'premium', label: 'Премиум' },
 ];
 
+export const scrollTo = (id: string) =>
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+
+const Logo = () => (
+  <svg viewBox="0 0 30 34" fill="none" aria-hidden="true" className="h-[34px] w-[30px]">
+    <path d="M4 6h22M4 6v22h22V6" stroke="currentColor" strokeWidth="1.4" />
+    <path d="M11 6v22M19 6v22M4 14h22M4 21h22" stroke="currentColor" strokeWidth="1" />
+  </svg>
+);
+
 const Header = () => {
-  const [scrolled, setScrolled] = useState(false);
-  const [active, setActive] = useState('map');
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 24);
-      const found = [...NAV]
-        .reverse()
-        .find((item) => {
-          const el = document.getElementById(item.id);
-          return el && el.getBoundingClientRect().top <= 140;
-        });
-      if (found) setActive(found.id);
-    };
+    const onScroll = () => setScrolled(window.scrollY > 40);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -37,96 +39,67 @@ const Header = () => {
 
   const go = (id: string) => {
     setOpen(false);
-    setTimeout(() => scrollToId(id), 60);
+    scrollTo(id);
   };
 
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? 'border-b border-border bg-background/85 backdrop-blur-xl'
-          : 'border-b border-transparent bg-transparent'
-      }`}
-    >
-      <div className="mx-auto flex h-[72px] max-w-[1400px] items-center justify-between gap-6 px-5 lg:px-10">
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="group flex items-center gap-3 text-left"
-        >
-          <span className="relative flex h-10 w-10 items-center justify-center border border-primary/50 bg-primary/10">
-            <span className="absolute inset-0 animate-pulse-glow bg-primary/10" />
-            <Icon name="Hexagon" size={20} className="relative text-primary" />
-          </span>
-          <span className="leading-none">
-            <span className="block font-display text-xl font-semibold uppercase tracking-[0.24em] text-foreground">
-              Цифра
-            </span>
-            <span className="mono-label hidden sm:block">ООО · институт архитектуры</span>
-          </span>
-        </button>
-
-        <nav className="hidden items-center gap-1 xl:flex">
-          {NAV.map((item) => (
+    <>
+      <header
+        className={`fixed left-6 right-6 z-50 flex animate-fade-in items-center px-6 transition-all duration-500 md:left-[60px] md:right-[60px] md:px-12 ${
+          scrolled ? 'top-0 h-[64px]' : 'top-5 h-[84px]'
+        }`}
+        style={{ background: 'var(--hero-x-bar)' }}
+      >
+        <nav className="hidden flex-1 gap-9 xl:flex">
+          {NAV.slice(0, 3).map((n) => (
             <button
-              key={item.id}
-              onClick={() => go(item.id)}
-              className={`px-3 py-2 font-mono text-[11px] uppercase tracking-[0.16em] transition-colors ${
-                active === item.id
-                  ? 'text-primary'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
+              key={n.id}
+              onClick={() => go(n.id)}
+              className="link-underline text-[0.82rem] font-medium uppercase tracking-[0.1em] text-primary"
             >
-              {item.label}
+              {n.label}
             </button>
           ))}
         </nav>
+        <button
+          onClick={() => go('hero')}
+          aria-label="ЦИФРА — на главную"
+          className="text-primary xl:absolute xl:left-1/2 xl:top-1/2 xl:-translate-x-1/2 xl:-translate-y-1/2"
+        >
+          <Logo />
+        </button>
+        <button
+          onClick={() => go('premium')}
+          className="ml-auto hidden border border-primary px-[30px] py-[17px] text-[0.82rem] font-medium uppercase tracking-[0.12em] text-primary transition-colors duration-300 hover:bg-primary hover:text-primary-foreground xl:inline-block"
+        >
+          Премиум
+        </button>
+        <button onClick={() => setOpen((v) => !v)} aria-label="Меню" className="ml-auto text-primary xl:hidden">
+          <Icon name={open ? 'X' : 'Menu'} size={26} />
+        </button>
+      </header>
 
-        <div className="flex items-center gap-3">
-          <Button
-            onClick={() => go('contacts')}
-            className="hidden bg-accent font-mono text-[11px] uppercase tracking-[0.18em] text-accent-foreground hover:bg-accent/85 sm:inline-flex"
-          >
-            Заявка
-          </Button>
-
-          <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild>
-              <button
-                aria-label="Меню"
-                className="flex h-10 w-10 items-center justify-center border border-border text-foreground transition-colors hover:border-primary hover:text-primary xl:hidden"
-              >
-                <Icon name="Menu" size={18} />
+      {open && (
+        <div
+          className="fixed inset-0 z-40 animate-fade-in overflow-y-auto bg-background/95 px-6 pb-10 pt-28 backdrop-blur-sm xl:hidden"
+          style={{ animationDuration: '0.3s' }}
+        >
+          <nav className="flex flex-col divide-y divide-border border-y border-border">
+            {NAV.map((n) => (
+              <button key={n.id} onClick={() => go(n.id)} className="py-3.5 text-left font-display text-xl text-foreground">
+                {n.label}
               </button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[86vw] border-border bg-card sm:w-[380px]">
-              <div className="mt-10 flex flex-col gap-1">
-                <p className="mono-label mb-4">Навигация</p>
-                {NAV.map((item, i) => (
-                  <button
-                    key={item.id}
-                    onClick={() => go(item.id)}
-                    className="group flex items-center justify-between border-b border-border/70 py-4 text-left"
-                  >
-                    <span className="font-display text-lg uppercase tracking-[0.14em] text-foreground group-hover:text-primary">
-                      {item.label}
-                    </span>
-                    <span className="font-mono text-[11px] text-muted-foreground">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                  </button>
-                ))}
-                <Button
-                  onClick={() => go('contacts')}
-                  className="mt-8 w-full bg-accent font-mono text-[11px] uppercase tracking-[0.18em] text-accent-foreground hover:bg-accent/85"
-                >
-                  Оставить заявку
-                </Button>
-              </div>
-            </SheetContent>
-          </Sheet>
+            ))}
+          </nav>
+          <button
+            onClick={() => go('premium')}
+            className="mt-8 w-full border border-primary px-8 py-4 text-[0.82rem] font-medium uppercase tracking-[0.12em] text-primary"
+          >
+            Премиум
+          </button>
         </div>
-      </div>
-    </header>
+      )}
+    </>
   );
 };
 

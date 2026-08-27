@@ -1,0 +1,29 @@
+{
+  "tests": [
+    {
+      "name": "CORS preflight",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Отправка сообщения агенту",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "stage": "Изыскания",
+        "messages": [{ "role": "user", "content": "Какие изыскания нужны для жилого дома?" }]
+      },
+      "expectedStatus": 200,
+      "expectedBody": { "reply": "string" },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Пустой запрос отклоняется",
+      "method": "POST",
+      "path": "/",
+      "body": { "messages": [] },
+      "expectedStatus": 400
+    }
+  ]
+}
