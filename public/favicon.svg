@@ -1,1 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 140"><path fill="#FF6637" transform="translate(0.305 0.525)" d="M25.6,0c26.59,33.33,26.54,80.64-.15,113.92,33.28-26.69,80.6-26.74,113.93-.14h0s-35.7,25.17-35.7,25.17H0V36.31L25.6,0ZM139.39,113.7c-26.51-33.25-26.51-80.42,0-113.67v113.67ZM139.33,0C106.08,26.49,58.94,26.49,25.69,0h113.64Z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" fill="#111A2B"/>
+  <rect x="2" y="2" width="60" height="60" fill="none" stroke="#C9A259" stroke-width="1.5"/>
+  <g fill="#C9A259" font-family="Georgia, 'Times New Roman', serif" font-weight="700" text-anchor="middle">
+    <text x="32" y="23" font-size="20" letter-spacing="-0.5">ЦИ</text>
+    <text x="32" y="44" font-size="22">Ф</text>
+    <text x="32" y="61" font-size="20" letter-spacing="-0.5">РА</text>
+  </g>
+</svg>
