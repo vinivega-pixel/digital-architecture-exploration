@@ -11,6 +11,8 @@ import type { Stage } from '@/data/stages';
 
 const nf = (v: number) => new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(v);
 
+const goPremium = () => document.getElementById('premium')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
 const PRODUCTS = [
   {
     icon: 'Map',
@@ -74,12 +76,25 @@ const PremiumPanel = ({ stage }: { stage: Stage }) => {
         </span>
       </div>
 
-      <div className="mt-6 space-y-3">
-        <Disclosure icon="MessagesSquare" label="ИИ-агент ведёт диалог" count={0} fg={fg}>
+      <p className="mt-4 text-[0.78rem] leading-relaxed" style={{ color: `${fg}b0` }}>
+        Первые три раздела открываются по подписке. Разработка проектов — отдельно, подписка для заказа не нужна.
+      </p>
+
+      <div className="mt-5 space-y-3">
+        <Disclosure icon="MessagesSquare" label="ИИ-агент ведёт диалог" count={0} fg={fg} locked>
           <AiChat stagePhase={stage.phase} fg={fg} bg={bg} />
+          <button
+            type="button"
+            onClick={goPremium}
+            className="mt-4 flex w-full items-center justify-center gap-2 px-5 py-3 text-[0.74rem] font-medium uppercase tracking-[0.12em]"
+            style={{ background: fg, color: bg }}
+          >
+            <Icon name="Sparkles" size={15} />
+            Подключить премиум
+          </button>
         </Disclosure>
 
-        <Disclosure icon="FileCheck" label="Готовые документы" count={docsTotal} fg={fg}>
+        <Disclosure icon="FileCheck" label="Готовые документы" count={docsTotal} fg={fg} locked>
           <p className="font-display text-lg leading-tight" style={{ color: fg }}>
             Готовый проект документов по этапу
           </p>
@@ -112,17 +127,26 @@ const PremiumPanel = ({ stage }: { stage: Stage }) => {
 
           <button
             type="button"
-            onClick={() => setShowOffer(true)}
+            onClick={goPremium}
             className="mt-4 flex w-full items-center justify-center gap-2 px-5 py-3 text-[0.74rem] font-medium uppercase tracking-[0.12em]"
             style={{ background: fg, color: bg }}
           >
-            <Icon name="FileText" size={15} />
-            Получить коммерческое предложение
+            <Icon name="Sparkles" size={15} />
+            Подключить премиум
           </button>
         </Disclosure>
 
-        <Disclosure icon="ShieldCheck" label="Автопроверка по нормам" count={0} fg={fg}>
+        <Disclosure icon="ShieldCheck" label="Автопроверка по нормам" count={0} fg={fg} locked>
           <NormCheck stagePhase={stage.phase} fg={fg} bg={bg} />
+          <button
+            type="button"
+            onClick={goPremium}
+            className="mt-4 flex w-full items-center justify-center gap-2 px-5 py-3 text-[0.74rem] font-medium uppercase tracking-[0.12em]"
+            style={{ background: fg, color: bg }}
+          >
+            <Icon name="Sparkles" size={15} />
+            Подключить премиум
+          </button>
         </Disclosure>
 
         <Disclosure icon="Cpu" label="Цифровые продукты" count={PRODUCTS.length} fg={fg}>
@@ -147,7 +171,13 @@ const PremiumPanel = ({ stage }: { stage: Stage }) => {
 
           <div className="mt-4 border p-4" style={{ borderColor: `${fg}33`, background: `${fg}0d` }}>
             <p className="text-[0.68rem] uppercase tracking-[0.14em]" style={{ color: `${fg}99` }}>
-              Раздел для заказа
+              Разработка проекта
+            </p>
+            <p className="mt-1.5 text-[0.8rem] leading-relaxed" style={{ color: `${fg}b5` }}>
+              Цена ниже рыночной: считаем по площади объекта, без наценки за срочность. Подписка для заказа не нужна.
+            </p>
+            <p className="mt-3 text-[0.68rem] uppercase tracking-[0.14em]" style={{ color: `${fg}99` }}>
+              Раздел
             </p>
             <div className="mt-2 flex flex-wrap gap-2">
               {projects.map((p) => (
@@ -183,6 +213,9 @@ const PremiumPanel = ({ stage }: { stage: Stage }) => {
               </span>
               <span className="font-display text-2xl">{nf(price)} ₽</span>
             </div>
+            <p className="mt-1 text-[0.72rem]" style={{ color: `${fg}88` }}>
+              Средняя цена по рынку за этот объём — от {nf(Math.round((price * 2.2) / 10000) * 10000)} ₽
+            </p>
             <button
               type="button"
               onClick={() => setShowOffer(true)}
@@ -190,7 +223,7 @@ const PremiumPanel = ({ stage }: { stage: Stage }) => {
               style={{ background: fg, color: bg }}
             >
               <Icon name="FileText" size={15} />
-              Получить коммерческое предложение
+              Рассчитать и заказать проект
             </button>
           </div>
         </Disclosure>

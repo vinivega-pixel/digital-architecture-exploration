@@ -36,8 +36,8 @@ const OfferModal = ({ stage, offer, palette, amount, price, onClose }: Props) =>
 
   const download = () =>
     printDoc({
-      docTitle: `Коммерческое предложение ${num}`,
-      heading: `Коммерческое предложение ${num}`,
+      docTitle: `Расчёт стоимости ${num}`,
+      heading: `Расчёт стоимости разработки ${num}`,
       subheading: `${offer.title} · этап «${stage.phase}»`,
       inputs: [
         { label: offer.unitLabel, value: nf(amount) },
@@ -60,7 +60,7 @@ const OfferModal = ({ stage, offer, palette, amount, price, onClose }: Props) =>
       onClick={onClose}
       role="dialog"
       aria-modal="true"
-      aria-label="Коммерческое предложение"
+      aria-label="Заказ разработки проекта"
     >
       <div
         className="max-h-[92vh] w-full max-w-[560px] overflow-y-auto p-6 md:p-9"
@@ -111,12 +111,12 @@ const OfferModal = ({ stage, offer, palette, amount, price, onClose }: Props) =>
           style={{ borderColor: fg, color: fg }}
         >
           <Icon name="FileDown" size={16} />
-          Скачать коммерческое предложение
+          Скачать расчёт стоимости
         </button>
 
         {sent ? (
           <p className="mt-4 border px-4 py-3 text-[0.82rem]" style={{ borderColor: `${fg}44`, color: fg }}>
-            Расчёт закреплён за адресом {email}. Ответим письмом.
+            Заявка принята, адрес {email}. Инженер института свяжется и уточнит исходные данные.
           </p>
         ) : (
           <form
@@ -127,7 +127,7 @@ const OfferModal = ({ stage, offer, palette, amount, price, onClose }: Props) =>
             className="mt-4"
           >
             <label className="block text-[0.68rem] uppercase tracking-[0.14em]" style={{ color: `${fg}99` }}>
-              Почта для копии предложения
+              Почта для связи по заказу
             </label>
             <div className="mt-2 flex flex-col gap-2 sm:flex-row">
               <input
@@ -144,7 +144,7 @@ const OfferModal = ({ stage, offer, palette, amount, price, onClose }: Props) =>
                 className="shrink-0 px-6 py-3 text-[0.76rem] font-medium uppercase tracking-[0.12em]"
                 style={{ background: fg, color: bg }}
               >
-                Отправить
+                Отправить заявку
               </button>
             </div>
           </form>
