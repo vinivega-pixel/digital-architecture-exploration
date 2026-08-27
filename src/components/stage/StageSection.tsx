@@ -23,23 +23,34 @@ const StageSection = ({ stage }: { stage: Stage }) => {
           className="absolute inset-x-0 bottom-0 h-1/2"
           style={{ background: `linear-gradient(180deg, transparent, ${palette.rightBg}f2)` }}
         />
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `radial-gradient(ellipse 62% 48% at 50% 50%, ${palette.rightBg}b8 0%, ${palette.rightBg}55 58%, transparent 100%)`,
+          }}
+        />
 
-        <div className="absolute inset-x-0 bottom-0 px-6 pb-7 md:px-10 lg:px-14">
-          <p className="text-[0.68rem] uppercase tracking-[0.24em]" style={{ color: `${palette.rightFg}cc` }}>
-            Этап {stage.num} · {stage.phase}
-          </p>
-          <h2
-            className="mt-2 font-display text-[2rem] uppercase leading-[1.05] tracking-[0.02em] md:text-[3.2rem]"
-            style={{ color: palette.rightFg }}
-          >
-            {stage.kicker}
-          </h2>
-          <p
-            className="mt-3 max-w-[46em] text-[0.88rem] leading-relaxed md:text-[0.95rem]"
-            style={{ color: `${palette.rightFg}cc` }}
-          >
-            {stage.lead}
-          </p>
+        <div className="absolute inset-0 z-[2] flex items-center justify-center px-6 text-center md:px-10">
+          <div>
+            <p
+              className="text-[0.68rem] uppercase tracking-[0.24em] md:text-[0.72rem]"
+              style={{ color: `${palette.rightFg}cc` }}
+            >
+              Этап {stage.num}
+            </p>
+            <h2
+              className="mt-3 font-display text-[1.5rem] uppercase leading-[1.08] tracking-[0.03em] sm:text-[1.9rem] md:text-[2.4rem]"
+              style={{ color: palette.rightFg }}
+            >
+              {stage.kicker}
+            </h2>
+            <p
+              className="mx-auto mt-4 max-w-[34em] text-[0.82rem] leading-relaxed md:text-[0.9rem]"
+              style={{ color: `${palette.rightFg}cc` }}
+            >
+              {stage.lead}
+            </p>
+          </div>
         </div>
       </div>
 
