@@ -12,7 +12,7 @@ export const NAV = [
   { id: 'arkr', label: 'АР и КР' },
   { id: 'eom', label: 'Электроснабжение' },
   { id: 'vk', label: 'Водоснабжение' },
-  { id: 'ovik', label: 'ОВиК' },
+  { id: 'ovik', label: 'Отопление и вентиляция' },
   { id: 'ss', label: 'Безопасность' },
   { id: 'roof', label: 'Кровля' },
   { id: 'blago', label: 'Благоустройство' },

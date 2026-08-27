@@ -81,16 +81,13 @@ const PremiumPanel = ({ stage }: { stage: Stage }) => {
 
       <div className="mt-6 space-y-3">
         <Disclosure icon="MessagesSquare" label="Агент изучает" count={0} fg={fg}>
-          <p className="font-display text-lg leading-tight" style={{ color: fg }}>
-            ИИ инженер-консультант разбирает ваш объект
-          </p>
-          <p className="mt-2 text-[0.82rem] leading-relaxed" style={{ color: `${fg}b5` }}>
-            Задаёт вопросы об объекте, изучает исходные данные и документы, находит противоречия и нехватку сведений,
-            собирает карту задач и решений по этапу.
+          <p className="text-[0.82rem] leading-relaxed" style={{ color: `${fg}b5` }}>
+            ИИ-агент задаёт вопросы об объекте, изучает исходные данные и документы, находит противоречия и нехватку
+            сведений, собирает карту задач и решений по этапу.
           </p>
 
           <div className="mt-4">
-            <AiChat stagePhase={stage.phase} fg={fg} bg={bg} />
+            <AiChat stageId={stage.id} stagePhase={stage.phase} fg={fg} bg={bg} />
           </div>
 
           {!premium && (
