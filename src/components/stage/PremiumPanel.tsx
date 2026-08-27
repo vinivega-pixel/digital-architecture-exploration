@@ -104,10 +104,7 @@ const PremiumPanel = ({ stage }: { stage: Stage }) => {
         </Disclosure>
 
         <Disclosure icon="ShieldCheck" label="Ремонт документации" count={0} fg={fg} locked={!premium}>
-          <p className="font-display text-lg leading-tight" style={{ color: fg }}>
-            Проверка по всем нормам и требованиям
-          </p>
-          <ul className="mt-3 space-y-2.5">
+          <ul className="space-y-2.5">
             {REPAIR.map((r) => (
               <li key={r} className="flex gap-2.5">
                 <Icon name="Check" size={15} className="mt-0.5 shrink-0" style={{ color: `${fg}90` }} />
@@ -136,8 +133,8 @@ const PremiumPanel = ({ stage }: { stage: Stage }) => {
         </Disclosure>
 
         <Disclosure icon="Cpu" label="Цифровые продукты" count={0} fg={fg} locked={!premium}>
-          <p className="font-display text-lg leading-tight" style={{ color: fg }}>
-            Разработка полного комплекта документов под ключ на весь этап строительства
+          <p className="text-[0.82rem] leading-relaxed" style={{ color: `${fg}b5` }}>
+            Разработка полного комплекта документов под ключ на весь этап строительства.
           </p>
           <p className="mt-2 text-[0.82rem] leading-relaxed" style={{ color: `${fg}b5` }}>
             Разделы проекта, договоры и коммерческие предложения, технические задания, акты, журналы и расчёты —
