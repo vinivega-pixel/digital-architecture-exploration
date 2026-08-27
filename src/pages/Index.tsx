@@ -1,15 +1,31 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import Header from '@/components/site/Header';
+import Hero from '@/components/site/Hero';
+import RouteMap from '@/components/site/RouteMap';
+import DesignServices from '@/components/site/DesignServices';
+import Automation from '@/components/site/Automation';
+import Products from '@/components/site/Products';
+import Calculators from '@/components/site/Calculators';
+import DigitalTwin from '@/components/site/DigitalTwin';
+import About from '@/components/site/About';
+import Contacts from '@/components/site/Contacts';
+import Footer from '@/components/site/Footer';
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4 color-black text-black">Добро пожаловать!</h1>
-        <p className="text-xl text-gray-600">тут будет отображаться ваш проект</p>
-      </div>
-      <span className="absolute bottom-8 left-1/2 -translate-x-1/2 inline-block bg-[#FF6637] text-white text-sm px-4 py-2 rounded-full whitespace-nowrap">
-        Подождите 5 минут, Юра создает первую версию проекта с нуля
-      </span>
+    <div className="min-h-screen bg-background text-foreground">
+      <Header />
+      <main>
+        <Hero />
+        <RouteMap />
+        <DesignServices />
+        <Automation />
+        <Products />
+        <Calculators />
+        <DigitalTwin />
+        <About />
+        <Contacts />
+      </main>
+      <Footer />
     </div>
   );
 };
