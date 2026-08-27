@@ -36,7 +36,7 @@ const Hero = () => (
         <p className="mb-[18px] animate-fade-in text-[0.82rem] uppercase tracking-[0.2em] text-foreground [animation-delay:240ms]">
           Институт цифрового развития архитектуры
         </p>
-        <h1 className="animate-fade-in font-display text-[60px] font-normal leading-[1.05] [animation-delay:400ms]">
+        <h1 className="animate-fade-in font-display text-[34px] font-normal leading-[1.05] [animation-delay:400ms] sm:text-[46px] md:text-[60px]">
           <span className="block text-[2.3em] leading-[0.96] tracking-[0.01em] text-foreground">ЦИФРА</span>
         </h1>
         <p className="mx-auto mt-[22px] max-w-[32em] animate-fade-in text-[0.95rem] leading-[1.6] text-muted-foreground [animation-delay:560ms]">

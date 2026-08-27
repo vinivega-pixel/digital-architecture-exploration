@@ -72,7 +72,7 @@ const StageSection = ({ stage }: { stage: Stage }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2">
+      <div className="grid grid-cols-2">
         <FreePanel stage={stage} />
         <PremiumPanel stage={stage} />
       </div>

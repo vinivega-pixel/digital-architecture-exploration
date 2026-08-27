@@ -65,7 +65,7 @@ const PremiumPanel = ({ stage }: { stage: Stage }) => {
   const fg = palette.rightFg;
 
   return (
-    <div className="flex h-full flex-col px-6 py-10 md:px-10 md:py-12 lg:px-14" style={{ background: bg, color: fg }}>
+    <div className="flex h-full flex-col px-3 py-7 sm:px-5 md:px-10 md:py-12 lg:px-14" style={{ background: bg, color: fg }}>
       <div className="flex items-center gap-3">
         <span
           className="inline-flex items-center gap-1.5 border px-2.5 py-1 text-[0.62rem] uppercase tracking-[0.18em]"
@@ -74,7 +74,7 @@ const PremiumPanel = ({ stage }: { stage: Stage }) => {
           <Icon name="Sparkles" size={12} />
           Премиум
         </span>
-        <span className="text-[0.68rem] uppercase tracking-[0.18em]" style={{ color: `${fg}88` }}>
+        <span className="hidden text-[0.68rem] uppercase tracking-[0.18em] sm:inline" style={{ color: `${fg}88` }}>
           Институт делает за вас
         </span>
       </div>
