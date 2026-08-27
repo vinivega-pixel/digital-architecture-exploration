@@ -1,0 +1,29 @@
+{
+  "tests": [
+    {
+      "name": "CORS preflight",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Вопрос по норме",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "stage": "Кровля",
+        "question": "Какой минимальный уклон плоской кровли?"
+      },
+      "expectedStatus": 200,
+      "expectedBody": { "answer": "string" },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Пустой вопрос отклоняется",
+      "method": "POST",
+      "path": "/",
+      "body": { "question": "" },
+      "expectedStatus": 400
+    }
+  ]
+}

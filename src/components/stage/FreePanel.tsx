@@ -52,31 +52,47 @@ const FreePanel = ({ stage }: { stage: Stage }) => {
       </div>
 
       <div className="mt-6 space-y-3">
-        <Disclosure icon="Calculator" label="Калькуляторы" count={calcs.length} fg={fg}>
-          <div className="flex flex-wrap gap-2">
-            {calcs.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => setOpenCalc(openCalc === c.id ? null : c.id)}
-                className="border px-3 py-2 text-left text-[0.78rem] leading-snug transition-colors"
-                style={{
-                  borderColor: openCalc === c.id ? fg : `${fg}40`,
-                  background: openCalc === c.id ? `${fg}14` : 'transparent',
-                }}
-              >
-                {c.title}
-              </button>
-            ))}
-          </div>
+        <Disclosure
+          icon="Calculator"
+          label="Калькуляторы"
+          count={calcs.length}
+          fg={fg}
+          onToggle={(open) => {
+            if (open) setOpenCalc(null);
+          }}
+        >
           {active ? (
-            <div className="mt-4">
+            <div>
+              <button
+                type="button"
+                onClick={() => setOpenCalc(null)}
+                className="mb-4 inline-flex items-center gap-2 text-[0.74rem] uppercase tracking-[0.12em] transition-opacity hover:opacity-70"
+                style={{ color: `${fg}b0` }}
+              >
+                <Icon name="ChevronLeft" size={14} />
+                Все калькуляторы ({calcs.length})
+              </button>
               <CalcCard calc={active} palette={palette} stageTitle={stage.title} />
             </div>
           ) : (
-            <p className="mt-3 text-[0.78rem]" style={{ color: `${fg}90` }}>
-              Выберите калькулятор — откроется формула с расшифровкой, поля и выгрузка в PDF.
-            </p>
+            <>
+              <div className="flex flex-wrap gap-2">
+                {calcs.map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => setOpenCalc(c.id)}
+                    className="border px-3 py-2 text-left text-[0.78rem] leading-snug transition-colors"
+                    style={{ borderColor: `${fg}40` }}
+                  >
+                    {c.title}
+                  </button>
+                ))}
+              </div>
+              <p className="mt-3 text-[0.78rem]" style={{ color: `${fg}90` }}>
+                Выберите калькулятор — откроется формула с расшифровкой, поля и выгрузка в PDF.
+              </p>
+            </>
           )}
         </Disclosure>
 

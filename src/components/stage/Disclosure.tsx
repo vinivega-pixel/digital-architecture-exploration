@@ -7,25 +7,34 @@ type Props = {
   count: number;
   fg: string;
   locked?: boolean;
+  onToggle?: (open: boolean) => void;
   children: ReactNode;
 };
 
-const Disclosure = ({ icon, label, count, fg, locked, children }: Props) => {
+const Disclosure = ({ icon, label, count, fg, locked, onToggle, children }: Props) => {
   const [open, setOpen] = useState(false);
+
+  const toggle = () => {
+    const next = !open;
+    setOpen(next);
+    onToggle?.(next);
+  };
 
   return (
     <div className="border" style={{ borderColor: `${fg}2e` }}>
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={toggle}
         className="flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors"
         style={{ background: open ? `${fg}0f` : 'transparent', color: fg }}
       >
         <Icon name={icon} size={16} style={{ color: `${fg}b0` }} />
         <span className="flex-1 text-[0.78rem] font-medium uppercase tracking-[0.12em]">{label}</span>
-        <span className="text-[0.72rem] tabular-nums" style={{ color: `${fg}80` }}>
-          {count}
-        </span>
+        {count > 0 ? (
+          <span className="text-[0.72rem] tabular-nums" style={{ color: `${fg}80` }}>
+            {count}
+          </span>
+        ) : null}
         {locked ? <Icon name="Lock" size={13} style={{ color: `${fg}80` }} /> : null}
         <Icon
           name="ChevronDown"

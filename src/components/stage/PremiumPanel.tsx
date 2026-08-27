@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Icon from '@/components/ui/icon';
 import Disclosure from './Disclosure';
 import AiChat from './AiChat';
+import NormCheck from './NormCheck';
 import OfferModal from './OfferModal';
 import { stageExtras } from '@/data/stageExtras';
 import { extraCalcs } from '@/data/extraCalcs';
@@ -10,17 +11,48 @@ import type { Stage } from '@/data/stages';
 
 const nf = (v: number) => new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(v);
 
-const goPremium = () => document.getElementById('premium')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+const PRODUCTS = [
+  {
+    icon: 'Map',
+    name: 'Карты согласований',
+    text: 'Маршрут инстанций по этапу: кто согласует, что требует, сколько ждать и где чаще всего срывается срок.',
+  },
+  {
+    icon: 'FolderKanban',
+    name: 'Проекты',
+    text: 'Разработка разделов проекта по вашему объекту с проверкой инженером института.',
+  },
+  {
+    icon: 'FileText',
+    name: 'Комплект текстовой части',
+    text: 'Пояснительные записки, ведомости, спецификации и общие данные — по ГОСТ Р 21.101-2020.',
+  },
+  {
+    icon: 'PenTool',
+    name: 'Комплект графической части',
+    text: 'Планы, разрезы, схемы и узлы в рабочем виде, готовые к выпуску в производство работ.',
+  },
+  {
+    icon: 'Calculator',
+    name: 'Комплект расчётной части',
+    text: 'Расчёты с формулами, исходными данными и ссылками на нормы — в составе, который принимает экспертиза.',
+  },
+  {
+    icon: 'MonitorDown',
+    name: 'HTML офлайн-помощники',
+    text: 'Программы, работающие на компьютере без интернета: расчёты, подбор решений и проверка по нормам.',
+  },
+];
 
 const PremiumPanel = ({ stage }: { stage: Stage }) => {
-  const { palette, offer, premiumItems } = stage;
+  const { palette, offer } = stage;
   const bg = palette.rightBg;
   const fg = palette.rightFg;
   const extra = stageExtras[stage.id];
   const calcs = [stage.calc, ...(extra?.calcs ?? []), ...(extraCalcs[stage.id] ?? []), ...(formulaCalcs[stage.id] ?? [])];
   const templates = extra?.templates ?? stage.templates;
-  const norms = extra?.norms ?? stage.norms;
   const projects = extra?.projects ?? [offer.title];
+  const docsTotal = templates.length + projects.length + calcs.length;
 
   const [amount, setAmount] = useState(Math.round(offer.minPrice / offer.rate / 100) * 100 || 1000);
   const [showOffer, setShowOffer] = useState(false);
@@ -47,99 +79,94 @@ const PremiumPanel = ({ stage }: { stage: Stage }) => {
           <AiChat stagePhase={stage.phase} fg={fg} bg={bg} />
         </Disclosure>
 
-        <Disclosure icon="Bot" label="Расчёты делает ИИ" count={calcs.length} fg={fg} locked>
-          <ul className="space-y-1.5">
-            {calcs.map((c) => (
-              <li key={c.id} className="flex gap-2.5 text-[0.82rem] leading-snug">
-                <Icon name="Sparkles" size={13} className="mt-0.5 shrink-0" style={{ color: `${fg}90` }} />
-                <span>{c.title} — считает агент, проверяет инженер</span>
-              </li>
-            ))}
-          </ul>
-          <button
-            type="button"
-            onClick={goPremium}
-            className="mt-4 flex w-full items-center justify-center gap-2 px-5 py-3 text-[0.74rem] font-medium uppercase tracking-[0.12em]"
-            style={{ background: fg, color: bg }}
-          >
-            <Icon name="Lock" size={14} />
-            Перейти в премиум
-          </button>
-        </Disclosure>
+        <Disclosure icon="FileCheck" label="Готовые документы" count={docsTotal} fg={fg}>
+          <p className="font-display text-lg leading-tight" style={{ color: fg }}>
+            Готовый проект документов по этапу
+          </p>
+          <p className="mt-2 text-[0.82rem] leading-relaxed" style={{ color: `${fg}b5` }}>
+            Всего {docsTotal} документов: разделы проекта, договор, коммерческое предложение, техническое задание,
+            акты, журналы и расчёты. Всё заполнено по вашему объекту и проверено инженером института.
+          </p>
 
-        <Disclosure icon="FileCheck" label="Заполненные документы" count={templates.length} fg={fg} locked>
-          <ul className="space-y-1.5">
-            {templates.slice(0, 8).map((t) => (
-              <li key={t} className="flex gap-2.5 text-[0.82rem] leading-snug">
-                <Icon name="FileCheck" size={13} className="mt-0.5 shrink-0" style={{ color: `${fg}90` }} />
-                <span>{t} — заполнен по вашему объекту</span>
-              </li>
-            ))}
-          </ul>
-          <button
-            type="button"
-            onClick={goPremium}
-            className="mt-4 flex w-full items-center justify-center gap-2 px-5 py-3 text-[0.74rem] font-medium uppercase tracking-[0.12em]"
-            style={{ background: fg, color: bg }}
-          >
-            <Icon name="Lock" size={14} />
-            Перейти в премиум
-          </button>
-        </Disclosure>
-
-        <Disclosure icon="ShieldCheck" label="Автопроверка по нормам" count={norms.length} fg={fg} locked>
-          <ul className="space-y-1.5">
-            {norms.map((n) => (
-              <li key={n} className="flex gap-2.5 text-[0.82rem] leading-snug">
-                <Icon name="ShieldCheck" size={13} className="mt-0.5 shrink-0" style={{ color: `${fg}90` }} />
-                <span>{n} — сверка со ссылкой на пункт</span>
-              </li>
-            ))}
-          </ul>
-          <button
-            type="button"
-            onClick={goPremium}
-            className="mt-4 flex w-full items-center justify-center gap-2 px-5 py-3 text-[0.74rem] font-medium uppercase tracking-[0.12em]"
-            style={{ background: fg, color: bg }}
-          >
-            <Icon name="Lock" size={14} />
-            Перейти в премиум
-          </button>
-        </Disclosure>
-
-        <Disclosure icon="Cpu" label="Цифровые продукты института" count={premiumItems.length} fg={fg}>
-          <ul className="space-y-3">
-            {premiumItems.map((p) => (
-              <li key={p.name}>
-                <p className="text-[0.86rem] font-semibold">{p.name}</p>
-                <p className="mt-0.5 text-[0.8rem] leading-relaxed" style={{ color: `${fg}b0` }}>
-                  {p.text}
+          <div className="mt-4 grid grid-cols-3 gap-px" style={{ background: `${fg}22` }}>
+            {[
+              { v: projects.length, l: 'разделов проекта' },
+              { v: templates.length, l: 'форм и актов' },
+              { v: calcs.length, l: 'расчётов' },
+            ].map((s) => (
+              <div key={s.l} className="p-3" style={{ background: bg }}>
+                <p className="font-display text-xl" style={{ color: fg }}>
+                  {s.v}
                 </p>
-              </li>
-            ))}
-          </ul>
-        </Disclosure>
-
-        <Disclosure icon="ClipboardList" label="Заказать проект на этом этапе" count={projects.length} fg={fg}>
-          <div className="flex flex-wrap gap-2">
-            {projects.map((p) => (
-              <button
-                key={p}
-                type="button"
-                onClick={() => setProject(p)}
-                className="border px-3 py-2 text-left text-[0.78rem] leading-snug transition-colors"
-                style={{
-                  borderColor: project === p ? fg : `${fg}40`,
-                  background: project === p ? `${fg}14` : 'transparent',
-                }}
-              >
-                {p}
-              </button>
+                <p className="mt-1 text-[0.64rem] uppercase leading-tight tracking-[0.1em]" style={{ color: `${fg}88` }}>
+                  {s.l}
+                </p>
+              </div>
             ))}
           </div>
 
+          <p className="mt-4 flex items-center gap-2 text-[0.78rem]" style={{ color: `${fg}b5` }}>
+            <Icon name="Clock" size={14} style={{ color: `${fg}90` }} />
+            Срок изготовления — 8–12 часов
+          </p>
+
+          <button
+            type="button"
+            onClick={() => setShowOffer(true)}
+            className="mt-4 flex w-full items-center justify-center gap-2 px-5 py-3 text-[0.74rem] font-medium uppercase tracking-[0.12em]"
+            style={{ background: fg, color: bg }}
+          >
+            <Icon name="FileText" size={15} />
+            Получить коммерческое предложение
+          </button>
+        </Disclosure>
+
+        <Disclosure icon="ShieldCheck" label="Автопроверка по нормам" count={0} fg={fg}>
+          <NormCheck stagePhase={stage.phase} fg={fg} bg={bg} />
+        </Disclosure>
+
+        <Disclosure icon="Cpu" label="Цифровые продукты" count={PRODUCTS.length} fg={fg}>
+          <ul className="space-y-3.5">
+            {PRODUCTS.map((p) => (
+              <li key={p.name} className="flex gap-2.5">
+                <Icon name={p.icon} size={15} className="mt-0.5 shrink-0" style={{ color: `${fg}90` }} />
+                <div>
+                  <p className="text-[0.86rem] font-semibold">{p.name}</p>
+                  <p className="mt-0.5 text-[0.8rem] leading-relaxed" style={{ color: `${fg}b0` }}>
+                    {p.text}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+
+          <p className="mt-4 flex items-center gap-2 text-[0.78rem]" style={{ color: `${fg}b5` }}>
+            <Icon name="Clock" size={14} style={{ color: `${fg}90` }} />
+            Срок изготовления — 8–12 часов
+          </p>
+
           <div className="mt-4 border p-4" style={{ borderColor: `${fg}33`, background: `${fg}0d` }}>
-            <label className="block text-[0.68rem] uppercase tracking-[0.14em]" style={{ color: `${fg}99` }}>
+            <p className="text-[0.68rem] uppercase tracking-[0.14em]" style={{ color: `${fg}99` }}>
+              Раздел для заказа
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {projects.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setProject(p)}
+                  className="border px-3 py-2 text-left text-[0.78rem] leading-snug transition-colors"
+                  style={{
+                    borderColor: project === p ? fg : `${fg}40`,
+                    background: project === p ? `${fg}14` : 'transparent',
+                  }}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
+
+            <label className="mt-4 block text-[0.68rem] uppercase tracking-[0.14em]" style={{ color: `${fg}99` }}>
               {offer.unitLabel}
             </label>
             <input
@@ -156,9 +183,6 @@ const PremiumPanel = ({ stage }: { stage: Stage }) => {
               </span>
               <span className="font-display text-2xl">{nf(price)} ₽</span>
             </div>
-            <p className="mt-1 text-[0.72rem]" style={{ color: `${fg}88` }}>
-              Срок: {offer.term}
-            </p>
             <button
               type="button"
               onClick={() => setShowOffer(true)}
@@ -175,7 +199,7 @@ const PremiumPanel = ({ stage }: { stage: Stage }) => {
       {showOffer ? (
         <OfferModal
           stage={stage}
-          offer={{ ...offer, title: project }}
+          offer={{ ...offer, title: project, term: '8–12 часов' }}
           palette={palette}
           amount={amount}
           price={price}
