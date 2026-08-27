@@ -66,29 +66,20 @@ const PremiumPanel = ({ stage }: { stage: Stage }) => {
         </span>
       </div>
 
-      <p className="mt-4 text-[0.78rem] leading-relaxed" style={{ color: `${fg}b0` }}>
-        {premium
-          ? 'Премиум-доступ активен: все разделы открыты.'
-          : 'ИИ-агент доступен всем. Автопроверка по нормам и цифровые продукты — по премиум-подписке.'}
-      </p>
-
-      <div className="mt-5 space-y-3">
-        <Disclosure icon="MessagesSquare" label="ИИ-агент ведёт диалог" count={0} fg={fg}>
-          <AiChat stagePhase={stage.phase} fg={fg} bg={bg} />
-          <p className="mt-3 text-[0.74rem] leading-relaxed" style={{ color: `${fg}90` }}>
-            Диалог с ИИ-агентом открыт всем без подписки.
+      <div className="mt-6 space-y-3">
+        <Disclosure icon="MessagesSquare" label="Агент изучает" count={0} fg={fg}>
+          <p className="font-display text-lg leading-tight" style={{ color: fg }}>
+            ИИ инженер-консультант разбирает ваш объект
           </p>
-        </Disclosure>
+          <p className="mt-2 text-[0.82rem] leading-relaxed" style={{ color: `${fg}b5` }}>
+            Задаёт вопросы об объекте, изучает исходные данные и документы, находит противоречия и нехватку сведений,
+            собирает карту задач и решений по этапу.
+          </p>
 
-        <Disclosure icon="ShieldCheck" label="Автопроверка по нормам" count={0} fg={fg} locked={!premium}>
-          {premium ? (
-            <NormCheck stagePhase={stage.phase} fg={fg} bg={bg} />
-          ) : (
-            <p className="text-[0.82rem] leading-relaxed" style={{ color: `${fg}b5` }}>
-              Задаёте вопрос по нормам — получаете ответ с юридическим обоснованием: конкретный свод правил, ГОСТ или
-              статья кодекса и что это значит для проекта. Открывается по подписке.
-            </p>
-          )}
+          <div className="mt-4">
+            <AiChat stagePhase={stage.phase} fg={fg} bg={bg} />
+          </div>
+
           {!premium && (
             <button
               type="button"
@@ -97,7 +88,33 @@ const PremiumPanel = ({ stage }: { stage: Stage }) => {
               style={{ background: fg, color: bg }}
             >
               <Icon name="Sparkles" size={15} />
-              Подключить премиум
+              Премиум на сутки — 999 ₽
+            </button>
+          )}
+        </Disclosure>
+
+        <Disclosure icon="ShieldCheck" label="Ремонт документации" count={0} fg={fg} locked={!premium}>
+          <p className="font-display text-lg leading-tight" style={{ color: fg }}>
+            Проверка по всем нормам и требованиям
+          </p>
+          <p className="mt-2 text-[0.82rem] leading-relaxed" style={{ color: `${fg}b5` }}>
+            Составление перечня ошибок с обоснованием по сводам правил и ГОСТам, редактирование существующих
+            документов и составление недостающих с нуля.
+          </p>
+
+          {premium ? (
+            <div className="mt-4">
+              <NormCheck stagePhase={stage.phase} fg={fg} bg={bg} />
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => goPremium('work')}
+              className="mt-4 flex w-full items-center justify-center gap-2 px-5 py-3 text-[0.74rem] font-medium uppercase tracking-[0.12em]"
+              style={{ background: fg, color: bg }}
+            >
+              <Icon name="Sparkles" size={15} />
+              Премиум «Работа» — 5 990 ₽ в месяц
             </button>
           )}
         </Disclosure>
@@ -148,7 +165,7 @@ const PremiumPanel = ({ stage }: { stage: Stage }) => {
               style={{ background: fg, color: bg }}
             >
               <Icon name="Sparkles" size={15} className="shrink-0" />
-              Воспользоваться цифровыми продуктами в личном кабинете премиум
+              Премиум «Всё включено» — 99 999 ₽ в месяц
             </button>
           )}
         </Disclosure>
