@@ -1,9 +1,11 @@
 import FreePanel from './FreePanel';
 import PremiumPanel from './PremiumPanel';
+import { stageLabels } from '@/data/stageLabels';
 import type { Stage } from '@/data/stages';
 
 const StageSection = ({ stage }: { stage: Stage }) => {
   const { palette } = stage;
+  const heading = stageLabels[stage.id] ?? stage.kicker;
 
   return (
     <section id={stage.id} data-stage={stage.id} className="relative scroll-mt-16" style={{ background: palette.rightBg }}>
@@ -16,10 +18,6 @@ const StageSection = ({ stage }: { stage: Stage }) => {
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div
-          className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2"
-          style={{ background: 'rgba(255,255,255,.35)' }}
-        />
-        <div
           className="absolute inset-x-0 bottom-0 h-1/2"
           style={{ background: `linear-gradient(180deg, transparent, ${palette.rightBg}f2)` }}
         />
@@ -30,27 +28,47 @@ const StageSection = ({ stage }: { stage: Stage }) => {
           }}
         />
 
-        <div className="absolute inset-0 z-[2] flex items-center justify-center px-6 text-center md:px-10">
-          <div>
+        <div className="absolute inset-0 z-[2] grid grid-cols-1 items-center px-6 md:grid-cols-[1fr_auto_1fr] md:px-[60px]">
+          <p
+            className="ml-auto hidden max-w-[14em] border-r-2 pr-6 text-right text-[0.74rem] uppercase leading-[1.5] tracking-[0.12em] md:block"
+            style={{ color: palette.rightFg, borderColor: `${palette.rightFg}66` }}
+          >
+            Полезная сторона
+            <span className="mt-2 block text-[0.9em] normal-case tracking-[0.02em]" style={{ color: `${palette.rightFg}bf` }}>
+              Выполни самостоятельно — мы даём инструмент
+            </span>
+          </p>
+
+          <div className="mx-auto max-w-[22em] px-2 text-center md:max-w-[24em]">
             <p
-              className="text-[0.68rem] uppercase tracking-[0.24em] md:text-[0.72rem]"
+              className="text-[0.66rem] uppercase tracking-[0.24em] md:text-[0.7rem]"
               style={{ color: `${palette.rightFg}cc` }}
             >
               Этап {stage.num}
             </p>
             <h2
-              className="mt-3 font-display text-[1.5rem] uppercase leading-[1.08] tracking-[0.03em] sm:text-[1.9rem] md:text-[2.4rem]"
+              className="mt-3 font-display text-[1.35rem] uppercase leading-[1.12] tracking-[0.03em] sm:text-[1.6rem] md:text-[2rem]"
               style={{ color: palette.rightFg }}
             >
-              {stage.kicker}
+              {heading}
             </h2>
             <p
-              className="mx-auto mt-4 max-w-[34em] text-[0.82rem] leading-relaxed md:text-[0.9rem]"
+              className="mx-auto mt-4 text-[0.8rem] leading-relaxed md:text-[0.86rem]"
               style={{ color: `${palette.rightFg}cc` }}
             >
               {stage.lead}
             </p>
           </div>
+
+          <p
+            className="mr-auto hidden max-w-[14em] border-l-2 pl-6 text-left text-[0.74rem] uppercase leading-[1.5] tracking-[0.12em] md:block"
+            style={{ color: palette.rightFg, borderColor: `${palette.rightFg}66` }}
+          >
+            Премиум-сторона
+            <span className="mt-2 block text-[0.9em] normal-case tracking-[0.02em]" style={{ color: `${palette.rightFg}bf` }}>
+              Доверьте институту — получите результат
+            </span>
+          </p>
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { stages } from '@/data/stages';
+import { navLabels } from '@/data/stageLabels';
 
 const StageNav = () => {
   const [active, setActive] = useState(-1);
@@ -30,6 +31,7 @@ const StageNav = () => {
       >
         {stages.map((s, i) => {
           const isActive = i === active;
+          const label = navLabels[s.id] ?? s.phase;
           return (
             <li key={s.id} className="relative flex justify-center">
               <button
@@ -55,7 +57,7 @@ const StageNav = () => {
                     opacity: isActive ? 1 : 0,
                   }}
                 >
-                  {s.num} · {s.kicker}
+                  {s.num} · {label}
                 </span>
               </button>
 
@@ -64,7 +66,7 @@ const StageNav = () => {
                   className="pointer-events-none absolute left-[20px] top-1/2 z-10 -translate-y-1/2 whitespace-nowrap rounded px-2.5 py-1.5 text-[0.68rem] shadow-lg"
                   style={{ background: s.palette.rightBg, color: s.palette.rightFg }}
                 >
-                  {s.num} · {s.kicker}
+                  {s.num} · {label}
                 </span>
               )}
             </li>

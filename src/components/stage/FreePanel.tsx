@@ -51,10 +51,6 @@ const FreePanel = ({ stage }: { stage: Stage }) => {
         </span>
       </div>
 
-      <h3 className="mt-4 font-display text-2xl leading-tight md:text-[1.8rem]">
-        Выполни самостоятельно — мы даём инструмент
-      </h3>
-
       <div className="mt-6 space-y-3">
         <Disclosure icon="Calculator" label="Калькуляторы" count={calcs.length} fg={fg}>
           <div className="flex flex-wrap gap-2">

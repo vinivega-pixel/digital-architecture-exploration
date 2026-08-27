@@ -42,11 +42,7 @@ const PremiumPanel = ({ stage }: { stage: Stage }) => {
         </span>
       </div>
 
-      <h3 className="mt-4 font-display text-2xl leading-tight md:text-[1.8rem]">
-        Доверьте институту — получите результат
-      </h3>
-
-      <div className="mt-5 space-y-3">
+      <div className="mt-6 space-y-3">
         <Disclosure icon="MessagesSquare" label="ИИ-агент ведёт диалог" count={0} fg={fg}>
           <AiChat stagePhase={stage.phase} fg={fg} bg={bg} />
         </Disclosure>
