@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Icon from '@/components/ui/icon';
 import Reveal from './Reveal';
 import { useAuth } from '@/context/AuthContext';
@@ -23,17 +23,18 @@ const PLANS = [
     best: true,
   },
   {
-    id: 'week',
-    name: 'Неделя',
-    price: '4 990 ₽',
-    period: '7 дней · оплата за время работы',
+    id: 'work',
+    name: 'Работа',
+    price: '5 990 ₽',
+    period: 'в месяц · до 5 проектов в работе',
     forWhom:
-      'Когда работа идёт несколько дней подряд: пользуетесь премиумом столько, сколько нужно, и платите только за этот срок.',
+      'Для тех, кто ведёт несколько объектов одновременно. Всё из суточного премиума плюс инструменты для постоянной работы. Количество проектов можно расширить.',
     items: [
-      'Всё из суточного доступа',
-      'Сохранение истории расчётов и диалогов',
-      'Разбор нескольких разделов проекта',
-      'Отдельные услуги по цене премиума',
+      'Всё из суточного премиума',
+      'До 5 проектов в работе, лимит расширяется',
+      'CRM-система для управления объектами',
+      'Офлайн-программы HTML для расчётов без интернета',
+      'Личный кабинет стройки внутри премиума',
     ],
   },
   {
@@ -44,7 +45,7 @@ const PLANS = [
     forWhom:
       'Все функции открыты бесплатно, включая полную разработку проекта. Ничего докупать не нужно.',
     items: [
-      'Всё из недельного доступа',
+      'Всё из тарифа «Работа»',
       'Разработка проекта включена в подписку',
       'Все цифровые продукты института',
       'CRM и офлайн-помощники без доплат',
@@ -63,6 +64,15 @@ const Premium = () => {
   const { user, premium, startPayment } = useAuth();
   const { openAuth, openAccount } = useUi();
   const [plan, setPlan] = useState('day');
+
+  useEffect(() => {
+    const onSelect = (e: Event) => {
+      const id = (e as CustomEvent<string>).detail;
+      if (id) setPlan(id);
+    };
+    window.addEventListener('select-plan', onSelect);
+    return () => window.removeEventListener('select-plan', onSelect);
+  }, []);
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<string | null>(null);
 
@@ -87,8 +97,8 @@ const Premium = () => {
             Цифровые продукты института — по подписке
           </h2>
           <p className="mt-4 max-w-[42em] text-[0.95rem] leading-[1.7] text-muted-foreground">
-            Полезная сторона и диалог с ИИ-агентом открыты бесплатно всегда. Премиум добавляет готовые документы,
-            автопроверку по нормам, цифровые продукты и возможность купить отдельную услугу по цене института.
+            Полезная сторона и диалог с ИИ-агентом открыты бесплатно всегда. Премиум добавляет автопроверку по
+            нормам, цифровые продукты и разработку документов под ключ по цене института.
           </p>
         </Reveal>
 
@@ -131,8 +141,8 @@ const Premium = () => {
           <div className="mt-10 border border-border bg-card/40 p-7 md:p-10">
             <p className="rubric">Отдельные услуги по цене премиума</p>
             <p className="mt-3 max-w-[46em] text-[0.88rem] leading-relaxed text-muted-foreground">
-              С подпиской на сутки или неделю открывается возможность докупить конкретную услугу. В тарифе «Месяц ·
-              всё включено» они уже входят в стоимость.
+              В тарифах «Сутки» и «Работа» конкретную услугу можно докупить отдельно. В тарифе «Месяц · всё
+              включено» они уже входят в стоимость.
             </p>
             <ul className="mt-6 divide-y divide-border border-y border-border">
               {SERVICES.map((s) => (
