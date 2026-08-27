@@ -5,15 +5,64 @@ import { useAuth } from '@/context/AuthContext';
 import { useUi } from '@/context/UiContext';
 
 const PLANS = [
-  { id: 'month', name: 'Месяц', price: '4 900 ₽', period: 'в месяц', items: ['Все калькуляторы с выгрузкой PDF', 'База шаблонов и норм', 'Офлайн-программы HTML'] },
-  { id: 'year', name: 'Год', price: '39 000 ₽', period: 'в год · выгоднее на 34 %', items: ['Всё из месячного доступа', 'ИИ-агенты по разделам проекта', 'Карты согласований и горького опыта', 'Приоритетные ответы института'], best: true },
-  { id: 'team', name: 'Команда', price: '129 000 ₽', period: 'в год · до 15 сотрудников', items: ['Всё из годового доступа', 'Автоматизация бизнес-процессов и CRM', 'Цифровой двойник объекта', 'Обучение команды'] },
+  {
+    id: 'day',
+    name: 'Сутки',
+    price: '999 ₽',
+    period: '24 часа полного доступа',
+    forWhom:
+      'Проектировщику с готовой ПД и РД — проверить и исправить проект по нормам, подготовиться к экспертизе. Заказчику — проверить смету и оценочную стоимость строительства.',
+    items: [
+      'Личный кабинет премиум',
+      'Общение с ИИ по вашему проекту',
+      'Построение карты задач и решений',
+      'Разработка простых документов',
+      'Поиск и проверка норм с обоснованием',
+      'Покупка отдельных услуг по цене премиума',
+    ],
+    best: true,
+  },
+  {
+    id: 'week',
+    name: 'Неделя',
+    price: '4 990 ₽',
+    period: '7 дней · оплата за время работы',
+    forWhom:
+      'Когда работа идёт несколько дней подряд: пользуетесь премиумом столько, сколько нужно, и платите только за этот срок.',
+    items: [
+      'Всё из суточного доступа',
+      'Сохранение истории расчётов и диалогов',
+      'Разбор нескольких разделов проекта',
+      'Отдельные услуги по цене премиума',
+    ],
+  },
+  {
+    id: 'month',
+    name: 'Месяц · всё включено',
+    price: '99 999 ₽',
+    period: '30 дней · без доплат',
+    forWhom:
+      'Все функции открыты бесплатно, включая полную разработку проекта. Ничего докупать не нужно.',
+    items: [
+      'Всё из недельного доступа',
+      'Разработка проекта включена в подписку',
+      'Все цифровые продукты института',
+      'CRM и офлайн-помощники без доплат',
+      'Приоритетная поддержка инженеров',
+    ],
+  },
+];
+
+const SERVICES = [
+  { name: 'Программа CRM для стройки', price: '1 800 ₽/мес' },
+  { name: 'Часть проекта — один раздел', price: 'от 4 999 ₽' },
+  { name: 'Полноценный проект', price: 'от 49 990 ₽' },
 ];
 
 const Premium = () => {
   const { user, premium, startPayment } = useAuth();
   const { openAuth, openAccount } = useUi();
-  const [plan, setPlan] = useState('year');
+  const [plan, setPlan] = useState('day');
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<string | null>(null);
 
@@ -38,8 +87,8 @@ const Premium = () => {
             Цифровые продукты института — по подписке
           </h2>
           <p className="mt-4 max-w-[42em] text-[0.95rem] leading-[1.7] text-muted-foreground">
-            Полезная сторона остаётся открытой и бесплатной всегда. Премиум добавляет автономных ИИ-агентов,
-            офлайн-программы, готовые комплекты проектов и карты процессов.
+            Полезная сторона и диалог с ИИ-агентом открыты бесплатно всегда. Премиум добавляет готовые документы,
+            автопроверку по нормам, цифровые продукты и возможность купить отдельную услугу по цене института.
           </p>
         </Reveal>
 
@@ -62,7 +111,10 @@ const Premium = () => {
                 </div>
                 <p className="mt-4 font-display text-[2.2rem] leading-none text-foreground">{p.price}</p>
                 <p className="mt-2 text-[0.78rem] text-muted-foreground">{p.period}</p>
-                <ul className="mt-6 space-y-2.5">
+                <p className="mt-4 border-t border-border pt-4 text-[0.82rem] leading-relaxed text-muted-foreground">
+                  {p.forWhom}
+                </p>
+                <ul className="mt-5 space-y-2.5">
                   {p.items.map((it) => (
                     <li key={it} className="flex gap-2.5 text-[0.85rem] leading-relaxed text-foreground/85">
                       <Icon name="Check" size={15} className="mt-0.5 shrink-0 text-primary" />
@@ -76,7 +128,25 @@ const Premium = () => {
         </div>
 
         <Reveal>
-          <div className="mt-10 border border-border bg-card p-7 md:p-10">
+          <div className="mt-10 border border-border bg-card/40 p-7 md:p-10">
+            <p className="rubric">Отдельные услуги по цене премиума</p>
+            <p className="mt-3 max-w-[46em] text-[0.88rem] leading-relaxed text-muted-foreground">
+              С подпиской на сутки или неделю открывается возможность докупить конкретную услугу. В тарифе «Месяц ·
+              всё включено» они уже входят в стоимость.
+            </p>
+            <ul className="mt-6 divide-y divide-border border-y border-border">
+              {SERVICES.map((s) => (
+                <li key={s.name} className="flex items-baseline justify-between gap-4 py-3.5">
+                  <span className="text-[0.9rem] text-foreground">{s.name}</span>
+                  <span className="shrink-0 font-display text-lg text-primary">{s.price}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Reveal>
+
+        <Reveal>
+          <div className="mt-6 border border-border bg-card p-7 md:p-10">
             {premium ? (
               <div className="flex items-start gap-3">
                 <Icon name="ShieldCheck" size={22} className="mt-0.5 shrink-0 text-primary" />

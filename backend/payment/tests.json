@@ -18,7 +18,7 @@
       "path": "/",
       "body": {
         "action": "create",
-        "plan": "year"
+        "plan": "day"
       },
       "expectedStatus": 401
     },

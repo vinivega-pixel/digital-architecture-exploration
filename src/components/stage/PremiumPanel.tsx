@@ -1,16 +1,13 @@
-import { useState } from 'react';
 import Icon from '@/components/ui/icon';
 import Disclosure from './Disclosure';
 import AiChat from './AiChat';
 import NormCheck from './NormCheck';
-import OfferModal from './OfferModal';
 import { stageExtras } from '@/data/stageExtras';
 import { extraCalcs } from '@/data/extraCalcs';
 import { formulaCalcs } from '@/data/formulaCalcs';
 import { useAuth } from '@/context/AuthContext';
+import { useUi } from '@/context/UiContext';
 import type { Stage } from '@/data/stages';
-
-const nf = (v: number) => new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(v);
 
 const goPremium = () => document.getElementById('premium')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
@@ -49,6 +46,7 @@ const PRODUCTS = [
 
 const PremiumPanel = ({ stage }: { stage: Stage }) => {
   const { premium } = useAuth();
+  const { openAccount } = useUi();
   const { palette, offer } = stage;
   const bg = palette.rightBg;
   const fg = palette.rightFg;
@@ -58,10 +56,6 @@ const PremiumPanel = ({ stage }: { stage: Stage }) => {
   const projects = extra?.projects ?? [offer.title];
   const docsTotal = templates.length + projects.length + calcs.length;
 
-  const [amount, setAmount] = useState(Math.round(offer.minPrice / offer.rate / 100) * 100 || 1000);
-  const [showOffer, setShowOffer] = useState(false);
-  const [project, setProject] = useState(projects[0]);
-  const price = Math.max(offer.minPrice, Math.round((amount * offer.rate) / 1000) * 1000);
 
   return (
     <div className="flex h-full flex-col px-6 py-10 md:px-10 md:py-12 lg:px-14" style={{ background: bg, color: fg }}>
@@ -80,31 +74,16 @@ const PremiumPanel = ({ stage }: { stage: Stage }) => {
 
       <p className="mt-4 text-[0.78rem] leading-relaxed" style={{ color: `${fg}b0` }}>
         {premium
-          ? 'Премиум-доступ активен: все разделы открыты. Разработка проектов оплачивается отдельно.'
-          : 'Первые три раздела открываются по подписке. Разработка проектов — отдельно, подписка для заказа не нужна.'}
+          ? 'Премиум-доступ активен: все разделы открыты.'
+          : 'ИИ-агент доступен всем. Готовые документы, автопроверка по нормам и цифровые продукты — по премиум-подписке.'}
       </p>
 
       <div className="mt-5 space-y-3">
-        <Disclosure icon="MessagesSquare" label="ИИ-агент ведёт диалог" count={0} fg={fg} locked={!premium}>
-          {premium ? (
-            <AiChat stagePhase={stage.phase} fg={fg} bg={bg} />
-          ) : (
-            <p className="text-[0.82rem] leading-relaxed" style={{ color: `${fg}b5` }}>
-              Живой диалог с инженером-консультантом по этапу: задаёт вопросы об объекте, разбирает ваши исходные
-              документы, находит противоречия и нехватку данных. Открывается по подписке.
-            </p>
-          )}
-          {!premium && (
-            <button
-              type="button"
-              onClick={goPremium}
-              className="mt-4 flex w-full items-center justify-center gap-2 px-5 py-3 text-[0.74rem] font-medium uppercase tracking-[0.12em]"
-              style={{ background: fg, color: bg }}
-            >
-              <Icon name="Sparkles" size={15} />
-              Подключить премиум
-            </button>
-          )}
+        <Disclosure icon="MessagesSquare" label="ИИ-агент ведёт диалог" count={0} fg={fg}>
+          <AiChat stagePhase={stage.phase} fg={fg} bg={bg} />
+          <p className="mt-3 text-[0.74rem] leading-relaxed" style={{ color: `${fg}90` }}>
+            Диалог с ИИ-агентом открыт всем без подписки.
+          </p>
         </Disclosure>
 
         <Disclosure icon="FileCheck" label="Готовые документы" count={docsTotal} fg={fg} locked={!premium}>
@@ -173,7 +152,7 @@ const PremiumPanel = ({ stage }: { stage: Stage }) => {
           )}
         </Disclosure>
 
-        <Disclosure icon="Cpu" label="Цифровые продукты" count={PRODUCTS.length} fg={fg}>
+        <Disclosure icon="Cpu" label="Цифровые продукты" count={PRODUCTS.length} fg={fg} locked={!premium}>
           <ul className="space-y-3.5">
             {PRODUCTS.map((p) => (
               <li key={p.name} className="flex gap-2.5">
@@ -193,76 +172,30 @@ const PremiumPanel = ({ stage }: { stage: Stage }) => {
             Срок изготовления — 8–12 часов
           </p>
 
-          <div className="mt-4 border p-4" style={{ borderColor: `${fg}33`, background: `${fg}0d` }}>
-            <p className="text-[0.68rem] uppercase tracking-[0.14em]" style={{ color: `${fg}99` }}>
-              Разработка проекта
-            </p>
-            <p className="mt-1.5 text-[0.8rem] leading-relaxed" style={{ color: `${fg}b5` }}>
-              Цена ниже рыночной: считаем по площади объекта, без наценки за срочность. Подписка для заказа не нужна.
-            </p>
-            <p className="mt-3 text-[0.68rem] uppercase tracking-[0.14em]" style={{ color: `${fg}99` }}>
-              Раздел
-            </p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {projects.map((p) => (
-                <button
-                  key={p}
-                  type="button"
-                  onClick={() => setProject(p)}
-                  className="border px-3 py-2 text-left text-[0.78rem] leading-snug transition-colors"
-                  style={{
-                    borderColor: project === p ? fg : `${fg}40`,
-                    background: project === p ? `${fg}14` : 'transparent',
-                  }}
-                >
-                  {p}
-                </button>
-              ))}
-            </div>
-
-            <label className="mt-4 block text-[0.68rem] uppercase tracking-[0.14em]" style={{ color: `${fg}99` }}>
-              {offer.unitLabel}
-            </label>
-            <input
-              type="number"
-              value={amount}
-              step={100}
-              onChange={(e) => setAmount(Number(e.target.value) || 0)}
-              className="mt-2 w-full border bg-transparent px-3 py-2.5 text-sm outline-none"
-              style={{ borderColor: `${fg}40`, color: fg }}
-            />
-            <div className="mt-4 flex items-baseline justify-between gap-4">
-              <span className="text-[0.8rem]" style={{ color: `${fg}aa` }}>
-                Стоимость работ
-              </span>
-              <span className="font-display text-2xl">{nf(price)} ₽</span>
-            </div>
-            <p className="mt-1 text-[0.72rem]" style={{ color: `${fg}88` }}>
-              Средняя цена по рынку за этот объём — от {nf(Math.round((price * 2.2) / 10000) * 10000)} ₽
-            </p>
+          {premium ? (
             <button
               type="button"
-              onClick={() => setShowOffer(true)}
+              onClick={openAccount}
               className="mt-4 flex w-full items-center justify-center gap-2 px-5 py-3 text-[0.74rem] font-medium uppercase tracking-[0.12em]"
               style={{ background: fg, color: bg }}
             >
-              <Icon name="FileText" size={15} />
-              Рассчитать и заказать проект
+              <Icon name="LayoutDashboard" size={15} />
+              Открыть личный кабинет
             </button>
-          </div>
+          ) : (
+            <button
+              type="button"
+              onClick={goPremium}
+              className="mt-4 flex w-full items-center justify-center gap-2 px-5 py-3 text-center text-[0.74rem] font-medium uppercase leading-snug tracking-[0.1em]"
+              style={{ background: fg, color: bg }}
+            >
+              <Icon name="Sparkles" size={15} className="shrink-0" />
+              Воспользоваться цифровыми продуктами в личном кабинете премиум
+            </button>
+          )}
         </Disclosure>
       </div>
 
-      {showOffer ? (
-        <OfferModal
-          stage={stage}
-          offer={{ ...offer, title: project, term: '8–12 часов' }}
-          palette={palette}
-          amount={amount}
-          price={price}
-          onClose={() => setShowOffer(false)}
-        />
-      ) : null}
     </div>
   );
 };

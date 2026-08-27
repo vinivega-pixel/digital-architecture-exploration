@@ -17,9 +17,9 @@ CORS = {
 }
 
 PLANS = {
-    'month': {'title': 'Премиум-доступ на месяц', 'amount': 4900, 'days': 30},
-    'year': {'title': 'Премиум-доступ на год', 'amount': 39000, 'days': 365},
-    'team': {'title': 'Премиум-доступ для команды на год', 'amount': 129000, 'days': 365},
+    'day': {'title': 'Премиум-доступ на сутки', 'amount': 999, 'days': 1},
+    'week': {'title': 'Премиум-доступ на неделю', 'amount': 4990, 'days': 7},
+    'month': {'title': 'Премиум-доступ на месяц, всё включено', 'amount': 99999, 'days': 30},
 }
 
 ROBOKASSA_URL = 'https://auth.robokassa.ru/Merchant/Index.aspx'
