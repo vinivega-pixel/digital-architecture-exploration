@@ -13,9 +13,12 @@ CORS = {
 
 DEEPSEEK_KEY = os.environ.get('DEEPSEEK_API_KEY', '')
 GROQ_KEY = os.environ.get('GROQ_API_KEY', '')
-USE_DEEPSEEK = bool(DEEPSEEK_KEY)
-API_URL = 'https://api.deepseek.com/chat/completions' if USE_DEEPSEEK else 'https://api.groq.com/openai/v1/chat/completions'
-MODEL = 'deepseek-chat' if USE_DEEPSEEK else 'llama-3.3-70b-versatile'
+
+PROVIDERS = []
+if DEEPSEEK_KEY:
+    PROVIDERS.append(('https://api.deepseek.com/chat/completions', 'deepseek-chat', DEEPSEEK_KEY))
+if GROQ_KEY:
+    PROVIDERS.append(('https://api.groq.com/openai/v1/chat/completions', 'llama-3.3-70b-versatile', GROQ_KEY))
 
 SYSTEM = (
     'Ты — нормоконтролёр цифрового института «ЦИФРА». Отвечаешь на вопросы о строительных нормах России. '
@@ -31,8 +34,28 @@ SYSTEM = (
 )
 
 
+def ask_llm(payload: dict) -> str:
+    for url, model, key in PROVIDERS:
+        body = dict(payload, model=model)
+        req = urllib.request.Request(
+            url,
+            data=json.dumps(body).encode('utf-8'),
+            headers={'Content-Type': 'application/json', 'Authorization': f'Bearer {key}'},
+            method='POST',
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=25) as resp:
+                data = json.loads(resp.read().decode('utf-8'))
+            return data['choices'][0]['message']['content']
+        except urllib.error.HTTPError as e:
+            print(f'LLM {url} -> {e.code} {e.read().decode("utf-8")[:200]}')
+        except Exception as e:
+            print(f'LLM {url} -> {str(e)[:200]}')
+    return ''
+
+
 def handler(event: dict, context) -> dict:
-    """Автопроверка по нормам: вопрос пользователя и ответ с юридическим обоснованием со ссылкой на документы."""
+    """Автопроверка по нормам: ответ на вопрос с юридическим обоснованием и порядком применения."""
     method = event.get('httpMethod', 'GET')
 
     if method == 'OPTIONS':
@@ -48,10 +71,19 @@ def handler(event: dict, context) -> dict:
     if not question:
         return {'statusCode': 400, 'headers': CORS, 'body': json.dumps({'error': 'question required'})}
 
+    if not PROVIDERS:
+        return {
+            'statusCode': 200,
+            'headers': CORS,
+            'body': json.dumps({
+                'answer': 'Сервис ещё не активирован: не добавлен ключ доступа к языковой модели.',
+                'configured': False,
+            }, ensure_ascii=False),
+        }
+
     system = SYSTEM + (f' Вопрос задан на этапе проекта «{stage}».' if stage else '')
 
     payload = {
-        'model': MODEL,
         'messages': [
             {'role': 'system', 'content': system},
             {'role': 'user', 'content': question[:2000]},
@@ -60,38 +92,16 @@ def handler(event: dict, context) -> dict:
         'max_tokens': 800,
     }
 
-    key = DEEPSEEK_KEY or GROQ_KEY
-    if not key:
+    answer = ask_llm(payload)
+
+    if not answer:
         return {
             'statusCode': 200,
             'headers': CORS,
             'body': json.dumps({
-                'answer': 'Проверка по нормам ещё не активирована: не добавлен ключ доступа к языковой модели. Добавьте секрет DEEPSEEK_API_KEY в настройках проекта — и сервис заработает.',
+                'answer': 'Проверка временно недоступна. Пополните баланс DeepSeek или добавьте бесплатный ключ GROQ_API_KEY в настройках проекта.',
                 'configured': False,
             }, ensure_ascii=False),
         }
-
-    req = urllib.request.Request(
-        API_URL,
-        data=json.dumps(payload).encode('utf-8'),
-        headers={'Content-Type': 'application/json', 'Authorization': f'Bearer {key}'},
-        method='POST',
-    )
-
-    try:
-        with urllib.request.urlopen(req, timeout=25) as resp:
-            data = json.loads(resp.read().decode('utf-8'))
-        answer = data['choices'][0]['message']['content']
-    except urllib.error.HTTPError as e:
-        detail = e.read().decode('utf-8')[:300]
-        if e.code in (401, 402, 403):
-            return {
-                'statusCode': 200,
-                'headers': CORS,
-                'body': json.dumps({'answer': 'Проверка временно недоступна: ключ доступа к языковой модели не принят. Проверьте секрет DEEPSEEK_API_KEY в настройках проекта.', 'configured': False}, ensure_ascii=False),
-            }
-        return {'statusCode': 502, 'headers': CORS, 'body': json.dumps({'error': 'llm_error', 'detail': detail}, ensure_ascii=False)}
-    except Exception as e:
-        return {'statusCode': 502, 'headers': CORS, 'body': json.dumps({'error': 'llm_unavailable', 'detail': str(e)[:200]}, ensure_ascii=False)}
 
     return {'statusCode': 200, 'headers': CORS, 'body': json.dumps({'answer': answer, 'configured': True}, ensure_ascii=False)}
