@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import Icon from '@/components/ui/icon';
-import printDoc from '@/lib/printDoc';
+import { downloadDoc } from '@/lib/printDoc';
 import { useAuth } from '@/context/AuthContext';
 import type { Calc, Palette } from '@/data/stages';
 
@@ -21,7 +21,7 @@ const CalcCard = ({ calc, palette, stageTitle }: Props) => {
 
   const download = () => {
     trackDownload('calc', calc.title, stageTitle);
-    return printDoc({
+    return downloadDoc({
       docTitle: `Расчёт — ${calc.title}`,
       heading: calc.title,
       subheading: `${stageTitle} · ${calc.note}`,

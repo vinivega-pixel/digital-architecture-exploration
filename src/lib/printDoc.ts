@@ -1,3 +1,5 @@
+import { safeName, saveBlob } from '@/lib/downloadFile';
+
 type Row = { label: string; value: string };
 
 export type PrintPayload = {
@@ -17,7 +19,7 @@ const esc = (s: string) =>
 const rows = (list: Row[]) =>
   list.map((r) => `<tr><td class="l">${esc(r.label)}</td><td class="v">${esc(r.value)}</td></tr>`).join('');
 
-export const printDoc = (p: PrintPayload) => {
+export const buildDocHtml = (p: PrintPayload, forFile = false) => {
   const date = new Date().toLocaleDateString('ru-RU');
   const html = `<!doctype html><html lang="ru"><head><meta charset="utf-8">
 <title>${esc(p.docTitle)}</title>
@@ -56,14 +58,26 @@ ${p.basis ? `<div class="basis">Основание: ${esc(p.basis)}</div>` : ''}
     p.footNote ??
       'Расчёт носит информационный характер, не является проектной документацией и публичной офертой (ст. 437 ГК РФ). Окончательные решения принимаются проектной организацией.',
   )}</div>
-<script>window.onload = function(){ setTimeout(function(){ window.print(); }, 250); };<\/script>
+${forFile ? '' : '<script>window.onload = function(){ setTimeout(function(){ window.print(); }, 250); };<\\/script>'}
 </body></html>`;
 
+  return html;
+};
+
+export const printDoc = (p: PrintPayload) => {
   const w = window.open('', '_blank', 'width=860,height=1000');
   if (!w) return false;
   w.document.open();
-  w.document.write(html);
+  w.document.write(buildDocHtml(p));
   w.document.close();
+  return true;
+};
+
+export const downloadDoc = (p: PrintPayload) => {
+  const blob = new Blob(['\ufeff' + buildDocHtml(p, true)], {
+    type: 'application/msword;charset=utf-8',
+  });
+  saveBlob(blob, `${safeName(p.docTitle)}.doc`);
   return true;
 };
 

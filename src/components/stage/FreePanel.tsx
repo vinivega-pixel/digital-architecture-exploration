@@ -2,9 +2,11 @@ import { useState } from 'react';
 import Icon from '@/components/ui/icon';
 import Disclosure from './Disclosure';
 import CalcCard from './CalcCard';
-import printDoc from '@/lib/printDoc';
+import { downloadDoc } from '@/lib/printDoc';
+import { downloadRemote } from '@/lib/downloadFile';
 import { findDocForm } from '@/data/docForms';
 import { resolveNorm } from '@/data/normLinks';
+import { findLibDoc, libDocUrl } from '@/data/libDocs';
 import { stageExtras } from '@/data/stageExtras';
 import { extraCalcs } from '@/data/extraCalcs';
 import { formulaCalcs } from '@/data/formulaCalcs';
@@ -26,7 +28,7 @@ const FreePanel = ({ stage }: { stage: Stage }) => {
   const downloadTemplate = (title: string) => {
     trackDownload('template', title, stage.phase);
     const form = findDocForm(title);
-    printDoc({
+    downloadDoc({
       docTitle: title,
       heading: title,
       subheading: `${stage.title} · типовая форма`,
@@ -37,6 +39,13 @@ const FreePanel = ({ stage }: { stage: Stage }) => {
       footNote:
         'Форма подготовлена по государственному типовому образцу. Перед применением проверьте актуальную редакцию нормативного документа и требования вашего заказчика.',
     });
+  };
+
+  const downloadNorm = (title: string) => {
+    const lib = findLibDoc(title);
+    if (!lib) return;
+    trackDownload('norm', `${lib.code} — ${lib.title}`, stage.phase);
+    downloadRemote(libDocUrl(lib), `${lib.code} ${lib.title}.pdf`);
   };
 
   return (
@@ -123,10 +132,25 @@ const FreePanel = ({ stage }: { stage: Stage }) => {
         <Disclosure icon="BookOpen" label="Нормы и правила" count={norms.length} fg={fg}>
           <ul className="space-y-1">
             {norms.map((n) => {
+              const lib = findLibDoc(n);
               const link = resolveNorm(n);
               return (
                 <li key={n}>
-                  {link ? (
+                  {lib ? (
+                    <button
+                      type="button"
+                      onClick={() => downloadNorm(n)}
+                      className="flex w-full items-start gap-2.5 py-1.5 text-left text-[0.82rem] leading-snug transition-opacity hover:opacity-70"
+                    >
+                      <Icon name="Download" size={13} className="mt-0.5 shrink-0" style={{ color: `${fg}90` }} />
+                      <span>
+                        {n}
+                        <span className="ml-1.5 text-[0.68rem]" style={{ color: `${fg}80` }}>
+                          PDF · {(lib.size / 1048576).toFixed(1)} МБ
+                        </span>
+                      </span>
+                    </button>
+                  ) : link ? (
                     <a
                       href={link.url}
                       target="_blank"
@@ -152,8 +176,9 @@ const FreePanel = ({ stage }: { stage: Stage }) => {
             })}
           </ul>
           <p className="mt-3 text-[0.7rem] leading-relaxed" style={{ color: `${fg}90` }}>
-            Ссылки ведут на официальные публикации: портал правовой информации pravo.gov.ru и электронный фонд
-            нормативно-технической документации. Проверяйте действующую редакцию на дату применения.
+            Документы с пометкой PDF скачиваются файлом сразу в загрузки. Остальные ведут на официальные публикации:
+            pravo.gov.ru и электронный фонд нормативно-технической документации. Проверяйте действующую редакцию на дату
+            применения.
           </p>
         </Disclosure>
       </div>

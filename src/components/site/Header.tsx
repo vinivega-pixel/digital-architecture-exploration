@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useUi } from '@/context/UiContext';
 import ShareQr from './ShareQr';
 import InfoModal from './InfoModal';
+import LibraryModal from './LibraryModal';
 
 export const NAV = [
   { id: 'uchastok', label: 'Участок' },
@@ -36,6 +37,7 @@ const Header = () => {
   const [open, setOpen] = useState(false);
   const [qr, setQr] = useState(false);
   const [info, setInfo] = useState(false);
+  const [lib, setLib] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -77,6 +79,14 @@ const Header = () => {
           <Logo />
         </button>
         <div className="ml-auto hidden items-center gap-3 xl:flex">
+          <button
+            onClick={() => setLib(true)}
+            aria-label="Библиотека норм"
+            title="Библиотека норм и сводов правил"
+            className="text-primary transition-opacity hover:opacity-70"
+          >
+            <Icon name="Library" size={21} />
+          </button>
           <button
             onClick={() => setInfo(true)}
             aria-label="Как работает институт"
@@ -125,9 +135,16 @@ const Header = () => {
           </button>
         </div>
         <button
+          onClick={() => setLib(true)}
+          aria-label="Библиотека норм"
+          className="ml-auto text-primary xl:hidden"
+        >
+          <Icon name="Library" size={23} />
+        </button>
+        <button
           onClick={() => setInfo(true)}
           aria-label="Как работает институт"
-          className="ml-auto text-primary xl:hidden"
+          className="ml-4 text-primary xl:hidden"
         >
           <Icon name="Info" size={23} />
         </button>
@@ -180,6 +197,7 @@ const Header = () => {
 
       <ShareQr open={qr} onClose={() => setQr(false)} />
       <InfoModal open={info} onClose={() => setInfo(false)} />
+      <LibraryModal open={lib} onClose={() => setLib(false)} />
     </>
   );
 };

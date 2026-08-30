@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Icon from '@/components/ui/icon';
-import printDoc from '@/lib/printDoc';
+import { downloadDoc } from '@/lib/printDoc';
 import type { Palette, Stage } from '@/data/stages';
 
 const nf = (v: number) => new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(v);
@@ -35,7 +35,7 @@ const OfferModal = ({ stage, offer, palette, amount, price, onClose }: Props) =>
   const num = `КП-${stage.num}-${new Date().getFullYear()}`;
 
   const download = () =>
-    printDoc({
+    downloadDoc({
       docTitle: `Расчёт стоимости ${num}`,
       heading: `Расчёт стоимости разработки ${num}`,
       subheading: `${offer.title} · этап «${stage.phase}»`,
