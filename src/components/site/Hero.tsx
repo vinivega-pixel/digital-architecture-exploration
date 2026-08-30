@@ -1,4 +1,5 @@
 import { HERO_IMAGE } from '@/data/stages';
+import { mobileCopy } from '@/data/mobileCopy';
 
 const Hero = () => (
   <section id="hero" className="relative h-[100svh] min-h-[560px] w-full overflow-hidden bg-background">
@@ -39,9 +40,12 @@ const Hero = () => (
         <h1 className="animate-fade-in font-display text-[34px] font-normal leading-[1.05] [animation-delay:400ms] sm:text-[46px] md:text-[60px]">
           <span className="block text-[2.3em] leading-[0.96] tracking-[0.01em] text-foreground">ЦИФРА</span>
         </h1>
-        <p className="mx-auto mt-[22px] max-w-[32em] animate-fade-in text-[0.95rem] leading-[1.6] text-muted-foreground [animation-delay:560ms]">
+        <p className="mx-auto mt-[22px] hidden max-w-[32em] animate-fade-in text-[0.95rem] leading-[1.6] text-muted-foreground [animation-delay:560ms] md:block">
           Слева — полезное и бесплатное: считаете и решаете сами, мы даём расчёты, шаблоны и нормы. Справа — премиум:
           цифровые продукты института, с которыми строителю проще.
+        </p>
+        <p className="mx-auto mt-[18px] max-w-[22em] animate-fade-in text-[0.88rem] leading-[1.55] text-muted-foreground [animation-delay:560ms] md:hidden">
+          {mobileCopy.hero.lead}
         </p>
       </div>
 

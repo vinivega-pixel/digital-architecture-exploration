@@ -70,11 +70,25 @@ const DEFAULT_HINTS = [
   'На какие нормы опираться в расчёте?',
 ];
 
-const AiChat = ({ stageId, stagePhase, fg, bg }: { stageId: string; stagePhase: string; fg: string; bg: string }) => {
+const AiChat = ({
+  stageId,
+  stagePhase,
+  fg,
+  bg,
+  tall,
+}: {
+  stageId: string;
+  stagePhase: string;
+  fg: string;
+  bg: string;
+  tall?: boolean;
+}) => {
   const [messages, setMessages] = useState<Msg[]>([
     {
       role: 'assistant',
-      content: `Здравствуйте. Я инженер-консультант института по этапу «${stagePhase}». Опишите объект — площадь, этажность, регион — или перечислите документы, которые у вас уже есть. Разберу состав, найду нехватку данных и подскажу, что делать дальше.`,
+      content: tall
+        ? `Инженер-консультант по этапу «${stagePhase}». Опишите объект — площадь, этажность, регион — или перечислите готовые документы.`
+        : `Здравствуйте. Я инженер-консультант института по этапу «${stagePhase}». Опишите объект — площадь, этажность, регион — или перечислите документы, которые у вас уже есть. Разберу состав, найду нехватку данных и подскажу, что делать дальше.`,
     },
   ]);
   const [input, setInput] = useState('');
@@ -118,7 +132,9 @@ const AiChat = ({ stageId, stagePhase, fg, bg }: { stageId: string; stagePhase: 
     <div>
       <div
         ref={boxRef}
-        className="max-h-[320px] space-y-3 overflow-y-auto border p-3.5"
+        className={`space-y-3 overflow-y-auto border p-3.5 ${
+          tall ? 'min-h-[52vh] max-h-[58vh]' : 'max-h-[320px]'
+        }`}
         style={{ borderColor: `${fg}2e`, background: `${fg}08` }}
       >
         {messages.map((m, i) => (
@@ -130,7 +146,9 @@ const AiChat = ({ stageId, stagePhase, fg, bg }: { stageId: string; stagePhase: 
               style={{ color: `${fg}90` }}
             />
             <div
-              className="max-w-[85%] whitespace-pre-wrap px-3 py-2 text-[0.8rem] leading-relaxed"
+              className={`whitespace-pre-wrap px-3 py-2 text-[0.8rem] leading-relaxed ${
+                tall ? 'max-w-[92%]' : 'max-w-[85%]'
+              }`}
               style={{
                 background: m.role === 'user' ? `${fg}18` : `${fg}0d`,
                 color: m.role === 'user' ? fg : `${fg}d0`,

@@ -62,7 +62,7 @@ const LibraryModal = ({ open, onClose }: Props) => {
       aria-label="Библиотека нормативных документов"
     >
       <div
-        className="flex max-h-[92vh] w-full max-w-[720px] flex-col border border-border bg-card"
+        className="flex h-full max-h-none w-full max-w-[720px] flex-col border-border bg-card sm:h-auto sm:max-h-[92vh] sm:border"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-4 border-b border-border p-6 md:p-8">

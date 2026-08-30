@@ -64,7 +64,7 @@ const InfoModal = ({ open, onClose }: Props) => {
       aria-label="Как работает институт"
     >
       <div
-        className="max-h-[92vh] w-full max-w-[720px] overflow-y-auto border border-border bg-card p-6 md:p-10"
+        className="h-full max-h-none w-full max-w-[720px] overflow-y-auto border-border bg-card p-5 sm:h-auto sm:max-h-[92vh] sm:border sm:p-6 md:p-10"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-4">
