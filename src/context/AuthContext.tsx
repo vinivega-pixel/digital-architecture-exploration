@@ -6,13 +6,23 @@ const PAY_URL = (func2url as Record<string, string>).payment;
 const TOKEN_KEY = 'cifra_token';
 
 export type Access = { premium: boolean; plan: string | null; expiresAt: string | null };
-export type User = { id: number; email: string; name?: string; company?: string; created_at?: string; access: Access };
+export type User = {
+  id: number;
+  email: string;
+  name?: string;
+  company?: string;
+  role?: string;
+  blocked?: boolean;
+  created_at?: string;
+  access: Access;
+};
 export type DownloadItem = { id: number; kind: string; title: string; stage?: string; created_at: string };
 
 type AuthValue = {
   user: User | null;
   loading: boolean;
   premium: boolean;
+  isAdmin: boolean;
   login: (email: string, password: string) => Promise<string | null>;
   register: (data: { email: string; password: string; name?: string; company?: string }) => Promise<string | null>;
   logout: () => Promise<void>;
@@ -82,6 +92,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       user,
       loading,
       premium: Boolean(user?.access?.premium),
+      isAdmin: user?.role === 'admin',
       login: (email, password) => submit('login', { email, password }),
       register: (data) =>
         submit('register', {

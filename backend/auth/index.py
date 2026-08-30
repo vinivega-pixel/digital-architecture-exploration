@@ -58,7 +58,10 @@ def access_state(cur, user_id: int) -> dict:
 
 
 def user_payload(cur, user_id: int) -> dict:
-    cur.execute(f"SELECT id, email, name, company, created_at FROM users WHERE id = {user_id}")
+    cur.execute(
+        "SELECT id, email, name, company, role, blocked, created_at FROM users "
+        f"WHERE id = {user_id}"
+    )
     user = cur.fetchone()
     if not user:
         return {}
@@ -80,8 +83,8 @@ def user_by_token(cur, token: str):
     if not token:
         return None
     cur.execute(
-        "SELECT user_id FROM sessions "
-        f"WHERE token = '{esc(token)}' AND expires_at > NOW() LIMIT 1"
+        "SELECT s.user_id FROM sessions s JOIN users u ON u.id = s.user_id "
+        f"WHERE s.token = '{esc(token)}' AND s.expires_at > NOW() AND u.blocked = FALSE LIMIT 1"
     )
     row = cur.fetchone()
     return row['user_id'] if row else None
@@ -142,10 +145,12 @@ def handler(event: dict, context) -> dict:
             email = str(body.get('email') or '').strip().lower()
             password = str(body.get('password') or '')
 
-            cur.execute(f"SELECT id, password_hash FROM users WHERE email = '{esc(email)}'")
+            cur.execute(f"SELECT id, password_hash, blocked FROM users WHERE email = '{esc(email)}'")
             row = cur.fetchone()
             if not row or not verify_password(password, row['password_hash']):
                 return respond(401, {'error': 'bad_credentials', 'message': 'Неверная почта или пароль'})
+            if row['blocked']:
+                return respond(403, {'error': 'blocked', 'message': 'Доступ к кабинету приостановлен'})
 
             session_token = create_session(cur, row['id'])
             conn.commit()

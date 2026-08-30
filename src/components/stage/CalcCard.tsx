@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import Icon from '@/components/ui/icon';
 import { downloadCalcDoc } from '@/lib/calcDoc';
+import { verifiedSubstitution } from '@/lib/formulaSteps';
 import { useAuth } from '@/context/AuthContext';
 import type { Calc, Palette } from '@/data/stages';
 
@@ -12,6 +13,10 @@ const CalcCard = ({ calc, palette, stageTitle }: Props) => {
     Object.fromEntries(calc.fields.map((f) => [f.key, f.def])),
   );
   const results = useMemo(() => calc.compute(vals), [calc, vals]);
+  const subst = useMemo(
+    () => verifiedSubstitution(calc.formula, calc.fields, vals, results),
+    [calc, vals, results],
+  );
   const fg = palette.leftFg;
 
   const set = (key: string, raw: string) => {
@@ -46,6 +51,18 @@ const CalcCard = ({ calc, palette, stageTitle }: Props) => {
           <p className="mt-1 font-mono text-[0.86rem] leading-relaxed" style={{ color: fg }}>
             {calc.formula}
           </p>
+          {subst.length ? (
+            <div className="mt-3 space-y-1">
+              <p className="text-[0.68rem] uppercase tracking-[0.14em]" style={{ color: `${fg}90` }}>
+                Подстановка
+              </p>
+              {subst.map((s) => (
+                <p key={s.symbolic} className="font-mono text-[0.78rem] leading-relaxed" style={{ color: fg }}>
+                  {[s.numeric, ...s.steps].filter(Boolean).join(' = ')}
+                </p>
+              ))}
+            </div>
+          ) : null}
           {calc.legend?.length ? (
             <ul className="mt-2.5 space-y-1">
               {calc.legend.map((l) => (

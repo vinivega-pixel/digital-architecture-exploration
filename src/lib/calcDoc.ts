@@ -1,5 +1,6 @@
 import { safeName, saveBlob } from '@/lib/downloadFile';
 import type { Calc, CalcRow } from '@/data/stages';
+import { verifiedSubstitution } from '@/lib/formulaSteps';
 
 const esc = (s: string) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
@@ -51,6 +52,14 @@ export const buildCalcHtml = ({ calc, values, results, stageTitle }: CalcDocPayl
     )
     .join('');
 
+  const subst = verifiedSubstitution(calc.formula, calc.fields, values, results);
+  const substRows = subst
+    .map((s) => {
+      const chain = [s.numeric, ...s.steps].filter(Boolean).join(' = ');
+      return `<p class="calcline">${sub(chain)}</p>`;
+    })
+    .join('');
+
   return `<!doctype html><html lang="ru"><head><meta charset="utf-8">
 <title>${esc(`Расчёт — ${calc.title}`)}</title>
 <style>
@@ -73,6 +82,8 @@ export const buildCalcHtml = ({ calc, values, results, stageTitle }: CalcDocPayl
   td.v { text-align: right; font-weight: 700; white-space: nowrap; }
   td.sym { width: 110px; font-family: 'Courier New', monospace; font-weight: 700; }
   sub { font-size: 0.72em; }
+  .calcline { font-family: 'Courier New', monospace; font-size: 13.5px; line-height: 1.75; margin: 0 0 8px;
+              padding: 10px 14px; background: #f6f6f4; border-left: 3px solid #9ca3af; word-break: break-word; }
   .formula { font-family: 'Courier New', monospace; font-size: 15px; font-weight: 700; line-height: 1.5;
              padding: 14px 16px; border-left: 3px solid #111827; background: #f6f6f4; margin: 0 0 14px; }
   .text { font-size: 12.5px; line-height: 1.7; font-family: Arial, sans-serif; color: #1f2937; margin: 0 0 10px; }
@@ -107,11 +118,15 @@ ${
 }
 
 <h2>4. Ход расчёта</h2>
-<p class="text">Вычисления выполнены последовательно, каждый промежуточный результат приведён отдельной строкой.</p>
+<p class="text">Значения подставлены в формулу, вычисление показано по действиям.</p>
+${
+  substRows ||
+  '<p class="text">Расчёт выполнен по приведённой выше формуле с подстановкой вводных данных.</p>'
+}
 ${
   stepRows
-    ? `<table><tr><th>Шаг</th><th>Вычисляемая величина</th><th style="text-align:right">Результат</th></tr>${stepRows}</table>`
-    : '<p class="text">Расчёт выполняется в одно действие по приведённой выше формуле.</p>'
+    ? `<table style="margin-top:14px"><tr><th>Шаг</th><th>Вычисляемая величина</th><th style="text-align:right">Результат</th></tr>${stepRows}</table>`
+    : ''
 }
 
 <h2>5. Ответ</h2>

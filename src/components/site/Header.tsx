@@ -5,6 +5,7 @@ import { useUi } from '@/context/UiContext';
 import ShareQr from './ShareQr';
 import InfoModal from './InfoModal';
 import LibraryModal from './LibraryModal';
+import AdminPanel from '@/components/admin/AdminPanel';
 
 export const NAV = [
   { id: 'uchastok', label: 'Участок' },
@@ -32,12 +33,13 @@ const Logo = () => (
 );
 
 const Header = () => {
-  const { user, premium } = useAuth();
+  const { user, premium, isAdmin } = useAuth();
   const { openAuth, openAccount, openOffer } = useUi();
   const [open, setOpen] = useState(false);
   const [qr, setQr] = useState(false);
   const [info, setInfo] = useState(false);
   const [lib, setLib] = useState(false);
+  const [admin, setAdmin] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -79,6 +81,16 @@ const Header = () => {
           <Logo />
         </button>
         <div className="ml-auto hidden items-center gap-3 xl:flex">
+          {isAdmin ? (
+            <button
+              onClick={() => setAdmin(true)}
+              aria-label="Кабинет администратора"
+              title="Кабинет администратора"
+              className="text-primary transition-opacity hover:opacity-70"
+            >
+              <Icon name="ShieldHalf" size={21} />
+            </button>
+          ) : null}
           <button
             onClick={() => setLib(true)}
             aria-label="Библиотека норм"
@@ -134,10 +146,19 @@ const Header = () => {
             Премиум
           </button>
         </div>
+        {isAdmin ? (
+          <button
+            onClick={() => setAdmin(true)}
+            aria-label="Кабинет администратора"
+            className="ml-auto text-primary xl:hidden"
+          >
+            <Icon name="ShieldHalf" size={23} />
+          </button>
+        ) : null}
         <button
           onClick={() => setLib(true)}
           aria-label="Библиотека норм"
-          className="ml-auto text-primary xl:hidden"
+          className={`text-primary xl:hidden ${isAdmin ? 'ml-4' : 'ml-auto'}`}
         >
           <Icon name="Library" size={23} />
         </button>
@@ -198,6 +219,7 @@ const Header = () => {
       <ShareQr open={qr} onClose={() => setQr(false)} />
       <InfoModal open={info} onClose={() => setInfo(false)} />
       <LibraryModal open={lib} onClose={() => setLib(false)} />
+      <AdminPanel open={admin} onClose={() => setAdmin(false)} />
     </>
   );
 };
