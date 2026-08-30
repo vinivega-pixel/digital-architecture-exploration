@@ -5,6 +5,8 @@ const TOKEN_KEY = 'cifra_token';
 
 export type AdminStats = {
   usersTotal: number;
+  wsActive?: number;
+  wsTotal?: number;
   usersWeek: number;
   premiumNow: number;
   blocked: number;
@@ -50,6 +52,20 @@ export type AdminDownload = {
   email?: string | null;
 };
 
+export type AdminWorkspace = {
+  id: number;
+  code: string;
+  title: string;
+  status: string;
+  note?: string;
+  assigned_at?: string | null;
+  owner_id?: number | null;
+  owner_email?: string | null;
+  owner_name?: string | null;
+  projects: number;
+  files: number;
+};
+
 export type AdminLogItem = {
   id: number;
   action: string;
@@ -89,6 +105,10 @@ export const adminApi = {
   resetPassword: (userId: number, password: string) =>
     call<{ ok: boolean }>({ action: 'reset_password', userId, password }),
   deleteUser: (userId: number) => call<{ ok: boolean }>({ action: 'delete_user', userId }),
+  workspaces: () => call<{ items: AdminWorkspace[] }>({ action: 'workspaces' }),
+  wsAssign: (code: string, userId: number) => call<{ ok: boolean }>({ action: 'ws_assign', code, userId }),
+  wsUpdate: (code: string, patch: { title?: string; note?: string; status?: string }) =>
+    call<{ ok: boolean }>({ action: 'ws_update', code, ...patch }),
   payments: () => call<{ items: AdminPayment[] }>({ action: 'payments' }),
   downloads: () => call<{ items: AdminDownload[] }>({ action: 'downloads' }),
   log: () => call<{ items: AdminLogItem[] }>({ action: 'log' }),

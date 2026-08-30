@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import Icon from '@/components/ui/icon';
 import AdminStats from './AdminStats';
 import AdminUserRow from './AdminUserRow';
+import AdminWorkspaces from './AdminWorkspaces';
 import {
   adminApi,
   type AdminDownload,
@@ -9,13 +10,15 @@ import {
   type AdminPayment,
   type AdminStats as Stats,
   type AdminUser,
+  type AdminWorkspace,
 } from '@/lib/adminApi';
 
-type Tab = 'overview' | 'users' | 'payments' | 'downloads' | 'log';
+type Tab = 'overview' | 'users' | 'cabinets' | 'payments' | 'downloads' | 'log';
 
 const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'overview', label: 'Сводка', icon: 'LayoutDashboard' },
   { id: 'users', label: 'Кабинеты', icon: 'Users' },
+  { id: 'cabinets', label: 'Кабинеты', icon: 'KeyRound' },
   { id: 'payments', label: 'Платежи', icon: 'Wallet' },
   { id: 'downloads', label: 'Скачивания', icon: 'Download' },
   { id: 'log', label: 'Журнал', icon: 'History' },
@@ -29,6 +32,7 @@ const AdminPanel = ({ open, onClose }: { open: boolean; onClose: () => void }) =
   const [stats, setStats] = useState<Stats | null>(null);
   const [top, setTop] = useState<{ title: string; kind: string; c: number }[]>([]);
   const [users, setUsers] = useState<AdminUser[]>([]);
+  const [cabs, setCabs] = useState<AdminWorkspace[]>([]);
   const [payments, setPayments] = useState<AdminPayment[]>([]);
   const [downloads, setDownloads] = useState<AdminDownload[]>([]);
   const [log, setLog] = useState<AdminLogItem[]>([]);
@@ -46,6 +50,10 @@ const AdminPanel = ({ open, onClose }: { open: boolean; onClose: () => void }) =
         setTop(d.top);
       } else if (tab === 'users') {
         setUsers((await adminApi.users(q)).items);
+      } else if (tab === 'cabinets') {
+        const [w, u] = await Promise.all([adminApi.workspaces(), adminApi.users('')]);
+        setCabs(w.items);
+        setUsers(u.items);
       } else if (tab === 'payments') {
         setPayments((await adminApi.payments()).items);
       } else if (tab === 'downloads') {
@@ -148,6 +156,8 @@ const AdminPanel = ({ open, onClose }: { open: boolean; onClose: () => void }) =
               ) : null}
             </>
           ) : null}
+
+          {tab === 'cabinets' ? <AdminWorkspaces items={cabs} users={users} onChange={load} /> : null}
 
           {tab === 'payments' ? (
             <ul className="divide-y divide-border border-y border-border">

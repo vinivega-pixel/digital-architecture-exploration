@@ -111,6 +111,20 @@ def handler(event: dict, context) -> dict:
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     try:
+        if action.startswith('ws_'):
+            user_id = user_by_token(cur, token)
+            if not user_id:
+                return respond(401, {
+                    'error': 'unauthorized',
+                    'message': 'Войдите в аккаунт, чтобы открыть премиум-кабинет',
+                })
+            cur.execute(f"SELECT id, email, name, role FROM users WHERE id = {user_id}")
+            me = dict(cur.fetchone())
+            import workspace
+            result = workspace.handle(cur, conn, me, action, body)
+            if result:
+                return respond(result[0], result[1])
+
         if method == 'GET' or action == 'me':
             user_id = user_by_token(cur, token)
             if not user_id:

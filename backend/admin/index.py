@@ -114,6 +114,10 @@ def handler(event: dict, context) -> dict:
             downloads_week = cur.fetchone()['c']
             cur.execute("SELECT COUNT(*) AS c FROM users WHERE blocked = TRUE")
             blocked = cur.fetchone()['c']
+            cur.execute("SELECT COUNT(*) AS c FROM workspaces WHERE status = 'active'")
+            ws_active = cur.fetchone()['c']
+            cur.execute("SELECT COUNT(*) AS c FROM workspaces")
+            ws_total = cur.fetchone()['c']
             cur.execute(
                 "SELECT title, kind, COUNT(*) AS c FROM downloads "
                 "GROUP BY title, kind ORDER BY c DESC LIMIT 10"
@@ -131,6 +135,8 @@ def handler(event: dict, context) -> dict:
                     'revenueMonth': float(revenue_month or 0),
                     'downloadsTotal': downloads_total,
                     'downloadsWeek': downloads_week,
+                    'wsActive': ws_active,
+                    'wsTotal': ws_total,
                 },
                 'top': top,
             })
@@ -258,6 +264,54 @@ def handler(event: dict, context) -> dict:
             cur.execute(f"DELETE FROM subscriptions WHERE user_id = {uid}")
             cur.execute(f"DELETE FROM users WHERE id = {uid}")
             log(cur, admin['id'], 'delete_user', uid, '')
+            conn.commit()
+            return respond(200, {'ok': True})
+
+        if action == 'workspaces':
+            cur.execute(
+                "SELECT w.id, w.code, w.title, w.status, w.note, w.assigned_at, w.created_at, "
+                "  u.id AS owner_id, u.email AS owner_email, u.name AS owner_name, "
+                "  (SELECT COUNT(*) FROM ws_projects p WHERE p.workspace_id = w.id AND p.archived = FALSE) AS projects, "
+                "  (SELECT COUNT(*) FROM ws_files f WHERE f.workspace_id = w.id AND f.archived = FALSE) AS files "
+                "FROM workspaces w LEFT JOIN users u ON u.id = w.owner_id ORDER BY w.code"
+            )
+            return respond(200, {'items': [dict(r) for r in cur.fetchall()]})
+
+        if action == 'ws_assign':
+            code = str(body.get('code') or '')[:8]
+            uid = num(body.get('userId'))
+            if uid:
+                cur.execute(f"SELECT email FROM users WHERE id = {uid}")
+                target = cur.fetchone()
+                if not target:
+                    return respond(404, {'error': 'no_user', 'message': 'Пользователь не найден'})
+                cur.execute(
+                    f"UPDATE workspaces SET owner_id = {uid}, status = 'active', assigned_at = NOW() "
+                    f"WHERE code = '{esc(code)}'"
+                )
+                log(cur, admin['id'], 'ws_assign', uid, f"{code} → {target['email']}")
+            else:
+                cur.execute(
+                    f"UPDATE workspaces SET owner_id = {admin['id']}, status = 'reserved', assigned_at = NULL "
+                    f"WHERE code = '{esc(code)}'"
+                )
+                log(cur, admin['id'], 'ws_release', None, code)
+            conn.commit()
+            return respond(200, {'ok': True})
+
+        if action == 'ws_update':
+            code = str(body.get('code') or '')[:8]
+            sets = []
+            if body.get('title') is not None:
+                sets.append(f"title = '{esc(str(body['title'])[:255])}'")
+            if body.get('note') is not None:
+                sets.append(f"note = '{esc(str(body['note'])[:1000])}'")
+            if body.get('status') in ('active', 'reserved', 'blocked'):
+                sets.append(f"status = '{body['status']}'")
+            if not sets:
+                return respond(400, {'error': 'nothing'})
+            cur.execute(f"UPDATE workspaces SET {', '.join(sets)} WHERE code = '{esc(code)}'")
+            log(cur, admin['id'], 'ws_update', None, f"{code}: {', '.join(sets)[:200]}")
             conn.commit()
             return respond(200, {'ok': True})
 

@@ -60,6 +60,15 @@ def handler(event: dict, context) -> dict:
         return {'statusCode': 405, 'headers': CORS, 'body': json.dumps({'error': 'Method not allowed'})}
 
     body = json.loads(event.get('body') or '{}')
+
+    role = body.get('role')
+    if role:
+        import assistants
+        result = assistants.run(str(role), str(body.get('prompt') or '')[:4000], body.get('context') or {})
+        code = 400 if result.get('error') == 'role' else 200
+        return {'statusCode': code, 'headers': CORS, 'isBase64Encoded': False,
+                'body': json.dumps(result, ensure_ascii=False)}
+
     messages = body.get('messages') or []
     stage = body.get('stage') or ''
 

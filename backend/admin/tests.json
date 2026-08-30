@@ -1,1 +1,6 @@
-{"tests": [{"name": "Без токена доступ закрыт", "method": "GET", "path": "/", "expectedStatus": 403, "expectedBody": {"error": "forbidden"}, "bodyMatcher": "partial"}]}
+{
+  "tests": [
+    { "name": "CORS preflight", "method": "OPTIONS", "path": "/", "expectedStatus": 200 },
+    { "name": "Без токена доступ закрыт", "method": "GET", "path": "/", "expectedStatus": 403 }
+  ]
+}

@@ -81,6 +81,16 @@ const Header = () => {
           <Logo />
         </button>
         <div className="ml-auto hidden items-center gap-3 xl:flex">
+          {(premium || isAdmin) && (
+            <a
+              href="/cabinet"
+              aria-label="Премиум-кабинет"
+              title="Премиум-кабинет"
+              className="text-primary transition-opacity hover:opacity-70"
+            >
+              <Icon name="LayoutDashboard" size={21} />
+            </a>
+          )}
           {isAdmin ? (
             <button
               onClick={() => setAdmin(true)}
