@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import Icon from '@/components/ui/icon';
-import { downloadDoc } from '@/lib/printDoc';
+import { downloadCalcDoc } from '@/lib/calcDoc';
 import { useAuth } from '@/context/AuthContext';
 import type { Calc, Palette } from '@/data/stages';
 
@@ -21,24 +21,7 @@ const CalcCard = ({ calc, palette, stageTitle }: Props) => {
 
   const download = () => {
     trackDownload('calc', calc.title, stageTitle);
-    return downloadDoc({
-      docTitle: `Расчёт — ${calc.title}`,
-      heading: calc.title,
-      subheading: `${stageTitle} · ${calc.note}`,
-      inputs: calc.fields.map((f) => ({
-        label: f.unit ? `${f.label}, ${f.unit}` : f.label,
-        value: String(vals[f.key] ?? f.def),
-      })),
-      results: results.map((r) => ({ label: r.label, value: r.value })),
-      basis: calc.basis,
-      body: calc.formula
-        ? `<div class="doc"><h3>Формула</h3><p><b>${calc.formula}</b></p>${
-            calc.legend?.length
-              ? `<h3>Обозначения</h3>${calc.legend.map((l) => `<p>${l}</p>`).join('')}`
-              : ''
-          }</div>`
-        : undefined,
-    });
+    return downloadCalcDoc({ calc, values: vals, results, stageTitle });
   };
 
   return (
@@ -126,7 +109,7 @@ const CalcCard = ({ calc, palette, stageTitle }: Props) => {
         }}
       >
         <Icon name="Download" size={15} />
-        Скачать расчёт PDF
+        Скачать расчёт документом
       </button>
 
       <p className="mt-3 text-[0.68rem] leading-relaxed" style={{ color: `${fg}90` }}>
