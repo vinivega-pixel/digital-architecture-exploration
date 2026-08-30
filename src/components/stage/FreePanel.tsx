@@ -10,6 +10,7 @@ import { findLibDoc, libDocUrl } from '@/data/libDocs';
 import { stageExtras } from '@/data/stageExtras';
 import { extraCalcs } from '@/data/extraCalcs';
 import { formulaCalcs } from '@/data/formulaCalcs';
+import { hiddenCalcIds } from '@/data/hiddenCalcs';
 import { useAuth } from '@/context/AuthContext';
 import type { Stage } from '@/data/stages';
 
@@ -19,7 +20,12 @@ const FreePanel = ({ stage }: { stage: Stage }) => {
   const bg = palette.leftBg;
   const fg = palette.leftFg;
   const extra = stageExtras[stage.id];
-  const calcs = [stage.calc, ...(extra?.calcs ?? []), ...(extraCalcs[stage.id] ?? []), ...(formulaCalcs[stage.id] ?? [])];
+  const calcs = [
+    stage.calc,
+    ...(extra?.calcs ?? []),
+    ...(extraCalcs[stage.id] ?? []),
+    ...(formulaCalcs[stage.id] ?? []),
+  ].filter((c) => !hiddenCalcIds.has(c.id));
   const templates = extra?.templates ?? stage.templates;
   const norms = extra?.norms ?? stage.norms;
   const [openCalc, setOpenCalc] = useState<string | null>(null);
