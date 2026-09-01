@@ -25,6 +25,7 @@ const AccountPanel = ({ open, onClose }: { open: boolean; onClose: () => void })
   const { user, logout, history } = useAuth();
   const [items, setItems] = useState<DownloadItem[]>([]);
   const [loading, setLoading] = useState(false);
+  const [cabinet, setCabinet] = useState<string | null>(null);
 
   useEffect(() => {
     if (!open || !user) return;
@@ -45,18 +46,18 @@ const AccountPanel = ({ open, onClose }: { open: boolean; onClose: () => void })
     };
   }, [open, onClose]);
 
-  if (!open || !user) return null;
-
-  const access = user.access ?? { premium: false, plan: null, expiresAt: null };
-  const [cabinet, setCabinet] = useState<string | null>(null);
+  const access = user?.access ?? { premium: false, plan: null, expiresAt: null };
 
   useEffect(() => {
-    if (!access.premium) return;
+    if (!open || !access.premium) return;
     wsApi
       .state()
       .then((s) => setCabinet(s.workspace?.code ?? null))
       .catch(() => setCabinet(null));
-  }, [access.premium]);
+  }, [open, access.premium]);
+
+  if (!open || !user) return null;
+
   const left = daysLeft(access.expiresAt);
 
   return (
