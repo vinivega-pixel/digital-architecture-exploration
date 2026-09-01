@@ -76,6 +76,38 @@ def activate(cur, payment):
         f"WHERE id = {payment['id']}"
     )
 
+    assign_workspace(cur, payment['user_id'])
+
+
+def assign_workspace(cur, user_id: int):
+    """Выдаёт покупателю премиума свободный кабинет: следующий свободный номер."""
+    cur.execute(
+        f"SELECT id FROM workspaces WHERE owner_id = {user_id} AND status = 'active' LIMIT 1"
+    )
+    if cur.fetchone():
+        return
+
+    cur.execute(
+        "SELECT id, code FROM workspaces WHERE owner_id IS NULL AND status = 'reserved' "
+        "ORDER BY code LIMIT 1"
+    )
+    free = cur.fetchone()
+
+    if not free:
+        cur.execute("SELECT COALESCE(MAX(CAST(SUBSTRING(code, 3) AS INTEGER)), 0) AS n FROM workspaces")
+        nxt = int(cur.fetchone()['n']) + 1
+        code = f'ID{nxt:04d}'
+        cur.execute(
+            "INSERT INTO workspaces (code, owner_id, title, status, assigned_at) VALUES "
+            f"('{code}', {user_id}, 'Премиум-кабинет {code}', 'active', NOW())"
+        )
+        return
+
+    cur.execute(
+        f"UPDATE workspaces SET owner_id = {user_id}, status = 'active', assigned_at = NOW(), "
+        f"title = 'Премиум-кабинет ' || code WHERE id = {free['id']}"
+    )
+
 
 def handler(event: dict, context) -> dict:
     """Оплата премиум-подписки через Робокассу: создание счёта и приём уведомления о платеже."""

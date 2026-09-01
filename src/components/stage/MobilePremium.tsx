@@ -5,7 +5,7 @@ import { mobileCopy } from '@/data/mobileCopy';
 import { useAuth } from '@/context/AuthContext';
 import { useUi } from '@/context/UiContext';
 import type { Stage } from '@/data/stages';
-import type { MobileTab } from './MobileStage';
+import type { MobileTab } from './mobileTabs';
 
 const goPremium = (plan?: string) => {
   if (plan) window.dispatchEvent(new CustomEvent('select-plan', { detail: plan }));

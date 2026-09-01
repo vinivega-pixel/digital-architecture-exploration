@@ -18,7 +18,6 @@ const PLANS = [
       'Построение карты задач и решений',
       'Разработка простых документов',
       'Поиск и проверка норм с обоснованием',
-      'Покупка отдельных услуг по цене премиума',
     ],
     best: true,
   },
@@ -52,12 +51,6 @@ const PLANS = [
       'Приоритетная поддержка инженеров',
     ],
   },
-];
-
-const SERVICES = [
-  { name: 'Программа CRM для стройки', price: '1 800 ₽/мес' },
-  { name: 'Часть проекта — один раздел', price: 'от 4 999 ₽' },
-  { name: 'Полноценный проект', price: 'от 49 990 ₽' },
 ];
 
 const Premium = () => {
@@ -146,24 +139,6 @@ const Premium = () => {
             </Reveal>
           ))}
         </div>
-
-        <Reveal>
-          <div className="mt-10 border border-border bg-card/40 p-7 md:p-10">
-            <p className="rubric">Отдельные услуги по цене премиума</p>
-            <p className="mt-3 max-w-[46em] text-[0.88rem] leading-relaxed text-muted-foreground">
-              В тарифах «Сутки» и «Работа» конкретную услугу можно докупить отдельно. В тарифе «Месяц · всё
-              включено» они уже входят в стоимость.
-            </p>
-            <ul className="mt-6 divide-y divide-border border-y border-border">
-              {SERVICES.map((s) => (
-                <li key={s.name} className="flex items-baseline justify-between gap-4 py-3.5">
-                  <span className="text-[0.9rem] text-foreground">{s.name}</span>
-                  <span className="shrink-0 font-display text-lg text-primary">{s.price}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Reveal>
 
         <Reveal>
           <div className="mt-6 border border-border bg-card p-7 md:p-10">

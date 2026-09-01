@@ -28,12 +28,28 @@ def s3_client():
     )
 
 
-def my_workspace(cur, user_id: int):
+def my_workspace(cur, user_id: int, code: str = ''):
+    if code:
+        cur.execute(
+            "SELECT id, code, title, status, theme, note FROM workspaces "
+            f"WHERE owner_id = {user_id} AND code = '{esc(code.upper())}' LIMIT 1"
+        )
+        row = cur.fetchone()
+        if row:
+            return row
     cur.execute(
         "SELECT id, code, title, status, theme, note FROM workspaces "
         f"WHERE owner_id = {user_id} AND status = 'active' ORDER BY code LIMIT 1"
     )
     return cur.fetchone()
+
+
+def my_codes(cur, user_id: int):
+    cur.execute(
+        "SELECT code, title, status FROM workspaces "
+        f"WHERE owner_id = {user_id} ORDER BY code"
+    )
+    return [dict(r) for r in cur.fetchall()]
 
 
 def handle(cur, conn, user, action: str, body: dict):
@@ -42,7 +58,7 @@ def handle(cur, conn, user, action: str, body: dict):
         return None
 
     op = action[3:]
-    ws = my_workspace(cur, user['id'])
+    ws = my_workspace(cur, user['id'], str(body.get('code') or ''))
     if not ws:
         return 403, {
             'error': 'no_workspace',
@@ -74,6 +90,7 @@ def handle(cur, conn, user, action: str, body: dict):
         premium = bool(cur.fetchone()) or user.get('role') == 'admin'
         return 200, {
             'workspace': dict(ws),
+            'codes': my_codes(cur, user['id']),
             'premium': premium,
             'projects': projects,
             'files': files,

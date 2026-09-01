@@ -12,7 +12,7 @@ import { wsApi, type WsState } from '@/lib/workspaceApi';
 
 type Side = 'projects' | 'library';
 
-const Workspace = () => {
+const Workspace = ({ code }: { code?: string } = {}) => {
   const [state, setState] = useState<WsState | null>(null);
   const [err, setErr] = useState('');
   const [loading, setLoading] = useState(true);
@@ -33,7 +33,7 @@ const Workspace = () => {
 
   const load = useCallback(async () => {
     try {
-      const s = await wsApi.state();
+      const s = await wsApi.state(code);
       setState(s);
       setErr('');
       if (!pid && s.projects[0]) setPid(s.projects[0].id);
@@ -47,7 +47,7 @@ const Workspace = () => {
     } finally {
       setLoading(false);
     }
-  }, [pid]);
+  }, [pid, code]);
 
   useEffect(() => {
     load();

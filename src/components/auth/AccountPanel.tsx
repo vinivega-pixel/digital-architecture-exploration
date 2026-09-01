@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import Icon from '@/components/ui/icon';
+import { wsApi } from '@/lib/workspaceApi';
 import { useAuth, type DownloadItem } from '@/context/AuthContext';
 
 const fmtDate = (value?: string | null) =>
@@ -47,6 +48,15 @@ const AccountPanel = ({ open, onClose }: { open: boolean; onClose: () => void })
   if (!open || !user) return null;
 
   const access = user.access ?? { premium: false, plan: null, expiresAt: null };
+  const [cabinet, setCabinet] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!access.premium) return;
+    wsApi
+      .state()
+      .then((s) => setCabinet(s.workspace?.code ?? null))
+      .catch(() => setCabinet(null));
+  }, [access.premium]);
   const left = daysLeft(access.expiresAt);
 
   return (
@@ -109,6 +119,13 @@ const AccountPanel = ({ open, onClose }: { open: boolean; onClose: () => void })
                 <p className="rubric">Осталось</p>
                 <p className="mt-1 font-display text-2xl text-primary">{left} дн.</p>
               </div>
+              <a
+                href={cabinet ? `/${cabinet.toLowerCase()}` : '/cabinet'}
+                className="col-span-2 flex items-center justify-center gap-2 bg-primary px-5 py-3.5 text-[0.76rem] font-medium uppercase tracking-[0.12em] text-primary-foreground"
+              >
+                <Icon name="LayoutDashboard" size={16} />
+                Открыть рабочий стол{cabinet ? ` · ${cabinet}` : ''}
+              </a>
             </div>
           ) : (
             <>

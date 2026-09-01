@@ -1,6 +1,5 @@
 import FreePanel from './FreePanel';
 import PremiumPanel from './PremiumPanel';
-import MobileStage from './MobileStage';
 import { stageCalcs } from './MobileFree';
 import { stageExtras } from '@/data/stageExtras';
 import { stageLabels } from '@/data/stageLabels';
@@ -15,7 +14,7 @@ const StageSection = ({ stage }: { stage: Stage }) => {
   const norms = extra?.norms ?? stage.norms;
 
   return (
-    <section id={stage.id} data-stage={stage.id} className="relative scroll-mt-16" style={{ background: palette.rightBg }}>
+    <section id={stage.id} data-stage={stage.id} className="relative hidden scroll-mt-16 md:block" style={{ background: palette.rightBg }}>
       <div className="relative h-[62vh] min-h-[384px] w-full overflow-hidden md:h-[79vh]">
         <img
           src={stage.image}
@@ -78,8 +77,6 @@ const StageSection = ({ stage }: { stage: Stage }) => {
           </p>
         </div>
       </div>
-
-      <MobileStage stage={stage} counts={{ calcs: calcs.length, templates: templates.length, norms: norms.length }} />
 
       <div className="hidden grid-cols-2 md:grid">
         <FreePanel stage={stage} />

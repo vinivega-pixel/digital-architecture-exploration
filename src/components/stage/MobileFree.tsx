@@ -13,7 +13,7 @@ import { hiddenCalcIds } from '@/data/hiddenCalcs';
 import { mobileCopy } from '@/data/mobileCopy';
 import { useAuth } from '@/context/AuthContext';
 import type { Stage } from '@/data/stages';
-import type { MobileTab } from './MobileStage';
+import type { MobileTab } from './mobileTabs';
 
 export const stageCalcs = (stage: Stage) => {
   const extra = stageExtras[stage.id];

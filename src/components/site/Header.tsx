@@ -84,6 +84,7 @@ const Header = () => {
           {(premium || isAdmin) && (
             <a
               href="/cabinet"
+              rel="noopener"
               aria-label="Премиум-кабинет"
               title="Премиум-кабинет"
               className="text-primary transition-opacity hover:opacity-70"

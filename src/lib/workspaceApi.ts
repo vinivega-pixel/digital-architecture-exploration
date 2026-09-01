@@ -31,6 +31,7 @@ export type WsNote = {
 };
 export type WsState = {
   workspace: WsInfo;
+  codes?: { code: string; title: string; status: string }[];
   premium: boolean;
   projects: WsProject[];
   files: WsFile[];
@@ -59,7 +60,7 @@ const call = async <T,>(payload: Record<string, unknown>): Promise<T> => {
 };
 
 export const wsApi = {
-  state: () => call<WsState>({ action: 'ws_state' }),
+  state: (code?: string) => call<WsState>({ action: 'ws_state', code: code ?? '' }),
   setTheme: (theme: string) => call<{ ok: boolean }>({ action: 'ws_set_theme', theme }),
   createProject: (name: string, data: unknown = {}) =>
     call<{ id: number }>({ action: 'ws_create_project', name, data }),
