@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import Icon from '@/components/ui/icon';
+import { useBodyLock } from '@/lib/bodyLock';
 
 type Props = { open: boolean; onClose: () => void };
 
@@ -42,14 +43,13 @@ const STAGES = [
 ];
 
 const InfoModal = ({ open, onClose }: Props) => {
+  useBodyLock(open);
   useEffect(() => {
     if (!open) return;
     const esc = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
     document.addEventListener('keydown', esc);
-    document.body.style.overflow = 'hidden';
     return () => {
       document.removeEventListener('keydown', esc);
-      document.body.style.overflow = '';
     };
   }, [open, onClose]);
 

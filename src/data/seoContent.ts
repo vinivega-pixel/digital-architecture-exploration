@@ -40,7 +40,7 @@ export const buildSeoHtml = (): string => {
 
   parts.push('<nav><h2>Этапы строительного проекта</h2><ul>');
   stages.forEach((s) => {
-    parts.push(`<li><a href="#${s.id}">Этап ${s.num}. ${esc(stageLabels[s.id] ?? s.kicker)}</a></li>`);
+    parts.push(`<li><a href="#seo-${s.id}">Этап ${s.num}. ${esc(stageLabels[s.id] ?? s.kicker)}</a></li>`);
   });
   parts.push('</ul></nav>');
 
@@ -50,7 +50,7 @@ export const buildSeoHtml = (): string => {
     const templates = extra?.templates ?? s.templates;
     const norms = extra?.norms ?? s.norms;
 
-    parts.push(`<section id="${s.id}">
+    parts.push(`<section id="seo-${s.id}">
 <h2>Этап ${s.num}. ${esc(stageLabels[s.id] ?? s.kicker)}</h2>
 <p>${esc(s.lead)}</p>
 <h3>Калькуляторы этапа «${esc(s.phase)}» — ${calcs.length} расчётов</h3>
@@ -77,13 +77,13 @@ export const buildSeoHtml = (): string => {
 </section>`);
   });
 
-  parts.push(`<section id="library">
+  parts.push(`<section id="seo-library">
 <h2>Библиотека нормативных документов — ${libDocs.length} документов</h2>
 <ul>`);
   libDocs.forEach((d) => parts.push(`<li>${esc(d.code)} — ${esc(d.title)}</li>`));
   parts.push('</ul></section>');
 
-  parts.push(`<section id="premium">
+  parts.push(`<section id="seo-premium">
 <h2>Премиум-доступ института ЦИФРА</h2>
 <h3>Сутки — 999 ₽</h3>
 <p>Круглосуточный доступ: личный кабинет премиум, общение с ИИ по вашему проекту, построение карты задач и решений, разработка простых документов, поиск и проверка норм с обоснованием.</p>
@@ -103,7 +103,7 @@ export const buildSeoHtml = (): string => {
 </ul>
 </section>`);
 
-  parts.push(`<section id="about">
+  parts.push(`<section id="seo-about">
 <h2>Об институте</h2>
 <p>ЦИФРА — Цифровой институт фундаментального развития архитектуры. Мы проектируем, считаем и автоматизируем. На каждом этапе строительства доступны бесплатные расчёты, шаблоны документов и нормы, а также цифровые продукты института: ИИ-агенты, офлайн-программы и готовые комплекты проектной и рабочей документации.</p>
 <p>Инженерная точность: каждое решение опирается на норматив и расчёт. Одна среда данных: изыскания, модель, документация и стройка живут в общем контуре. Сотрудничество: мы встраиваемся в процесс заказчика.</p>

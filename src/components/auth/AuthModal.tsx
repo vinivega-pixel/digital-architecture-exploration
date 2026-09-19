@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import Icon from '@/components/ui/icon';
 import { useAuth } from '@/context/AuthContext';
+import { useBodyLock } from '@/lib/bodyLock';
 
 type Props = { open: boolean; onClose: () => void; initialMode?: 'login' | 'register' };
 
 const AuthModal = ({ open, onClose, initialMode = 'login' }: Props) => {
+  useBodyLock(open);
   const { login, register } = useAuth();
   const [mode, setMode] = useState<'login' | 'register'>(initialMode);
   const [email, setEmail] = useState('');
@@ -22,10 +24,8 @@ const AuthModal = ({ open, onClose, initialMode = 'login' }: Props) => {
     if (!open) return;
     const esc = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
     document.addEventListener('keydown', esc);
-    document.body.style.overflow = 'hidden';
     return () => {
       document.removeEventListener('keydown', esc);
-      document.body.style.overflow = '';
     };
   }, [open, onClose]);
 

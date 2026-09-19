@@ -3,6 +3,7 @@ import Icon from '@/components/ui/icon';
 import { libDocs, libDocUrl, type LibDoc } from '@/data/libDocs';
 import { downloadRemote } from '@/lib/downloadFile';
 import { useAuth } from '@/context/AuthContext';
+import { useBodyLock } from '@/lib/bodyLock';
 
 type Props = { open: boolean; onClose: () => void };
 
@@ -14,6 +15,7 @@ const groupOf = (code: string) => {
 };
 
 const LibraryModal = ({ open, onClose }: Props) => {
+  useBodyLock(open);
   const { trackDownload } = useAuth();
   const [q, setQ] = useState('');
   const [busy, setBusy] = useState<string | null>(null);
@@ -22,10 +24,8 @@ const LibraryModal = ({ open, onClose }: Props) => {
     if (!open) return;
     const esc = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
     document.addEventListener('keydown', esc);
-    document.body.style.overflow = 'hidden';
     return () => {
       document.removeEventListener('keydown', esc);
-      document.body.style.overflow = '';
     };
   }, [open, onClose]);
 

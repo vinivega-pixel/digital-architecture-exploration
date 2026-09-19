@@ -3,6 +3,7 @@ import Icon from '@/components/ui/icon';
 import AdminStats from './AdminStats';
 import AdminUserRow from './AdminUserRow';
 import AdminWorkspaces from './AdminWorkspaces';
+import { useBodyLock } from '@/lib/bodyLock';
 import {
   adminApi,
   type AdminDownload,
@@ -28,6 +29,7 @@ const dt = (s?: string | null) =>
   s ? new Date(s).toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' }) : '—';
 
 const AdminPanel = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
+  useBodyLock(open);
   const [tab, setTab] = useState<Tab>('overview');
   const [stats, setStats] = useState<Stats | null>(null);
   const [top, setTop] = useState<{ title: string; kind: string; c: number }[]>([]);
@@ -77,10 +79,8 @@ const AdminPanel = ({ open, onClose }: { open: boolean; onClose: () => void }) =
     if (!open) return;
     const esc = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
     document.addEventListener('keydown', esc);
-    document.body.style.overflow = 'hidden';
     return () => {
       document.removeEventListener('keydown', esc);
-      document.body.style.overflow = '';
     };
   }, [open, onClose]);
 

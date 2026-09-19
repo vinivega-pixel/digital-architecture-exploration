@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Icon from '@/components/ui/icon';
 import { wsApi } from '@/lib/workspaceApi';
 import { useAuth, type DownloadItem } from '@/context/AuthContext';
+import { useBodyLock } from '@/lib/bodyLock';
 
 const fmtDate = (value?: string | null) =>
   value ? new Date(value).toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' }) : '—';
@@ -22,6 +23,7 @@ const daysLeft = (value?: string | null) => {
 };
 
 const AccountPanel = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
+  useBodyLock(open);
   const { user, logout, history } = useAuth();
   const [items, setItems] = useState<DownloadItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -39,10 +41,8 @@ const AccountPanel = ({ open, onClose }: { open: boolean; onClose: () => void })
     if (!open) return;
     const esc = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
     document.addEventListener('keydown', esc);
-    document.body.style.overflow = 'hidden';
     return () => {
       document.removeEventListener('keydown', esc);
-      document.body.style.overflow = '';
     };
   }, [open, onClose]);
 

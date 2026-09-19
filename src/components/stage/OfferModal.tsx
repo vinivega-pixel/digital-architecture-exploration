@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Icon from '@/components/ui/icon';
 import { downloadDoc } from '@/lib/printDoc';
 import type { Palette, Stage } from '@/data/stages';
+import { useBodyLock } from '@/lib/bodyLock';
 
 const nf = (v: number) => new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(v);
 
@@ -17,6 +18,7 @@ type Props = {
 };
 
 const OfferModal = ({ stage, offer, palette, amount, price, onClose }: Props) => {
+  useBodyLock(true);
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
   const bg = palette.rightBg;
@@ -25,10 +27,8 @@ const OfferModal = ({ stage, offer, palette, amount, price, onClose }: Props) =>
   useEffect(() => {
     const esc = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
     document.addEventListener('keydown', esc);
-    document.body.style.overflow = 'hidden';
     return () => {
       document.removeEventListener('keydown', esc);
-      document.body.style.overflow = '';
     };
   }, [onClose]);
 

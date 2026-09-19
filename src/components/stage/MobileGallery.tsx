@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import Icon from '@/components/ui/icon';
 import MobileFree, { stageCalcs } from './MobileFree';
 import MobilePremium from './MobilePremium';
+import { useBodyLock } from '@/lib/bodyLock';
 import { mobileCopy } from '@/data/mobileCopy';
 import { stageExtras } from '@/data/stageExtras';
 import { stageLabels } from '@/data/stageLabels';
@@ -32,13 +33,7 @@ const MobileGallery = () => {
     norms: (extra?.norms ?? stage.norms).length,
   };
 
-  useEffect(() => {
-    if (!tab) return;
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [tab]);
+  useBodyLock(Boolean(tab));
 
   const onScroll = () => {
     const el = trackRef.current;
@@ -88,7 +83,7 @@ const MobileGallery = () => {
         style={{ scrollbarWidth: 'none' }}
       >
         {stages.map((s) => (
-          <div key={s.id} id={s.id} className="relative w-full shrink-0 snap-center">
+          <div key={s.id} className="relative w-full shrink-0 snap-center">
             <div className="relative h-[54vh] min-h-[330px] w-full overflow-hidden">
               <img
                 src={s.image}

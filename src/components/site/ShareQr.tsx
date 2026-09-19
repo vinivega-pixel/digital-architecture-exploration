@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import Icon from '@/components/ui/icon';
+import { useBodyLock } from '@/lib/bodyLock';
 
 type Props = { open: boolean; onClose: () => void };
 
 const ShareQr = ({ open, onClose }: Props) => {
+  useBodyLock(open);
   const [copied, setCopied] = useState<'link' | 'pay' | null>(null);
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const siteLink = origin || 'https://tsifra.institute';
@@ -14,10 +16,8 @@ const ShareQr = ({ open, onClose }: Props) => {
     if (!open) return;
     const esc = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
     document.addEventListener('keydown', esc);
-    document.body.style.overflow = 'hidden';
     return () => {
       document.removeEventListener('keydown', esc);
-      document.body.style.overflow = '';
     };
   }, [open, onClose]);
 
