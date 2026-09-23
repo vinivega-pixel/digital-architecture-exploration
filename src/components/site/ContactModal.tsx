@@ -4,7 +4,7 @@ import { useBodyLock } from '@/lib/bodyLock';
 
 type Props = { open: boolean; onClose: () => void };
 
-const MAIL = 'info@cifra-institute.ru';
+const MAIL = 'cifrainst@mail.ru';
 
 /** Окно связи с институтом: письмо уходит на почту с заполненными данными. */
 const ContactModal = ({ open, onClose }: Props) => {

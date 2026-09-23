@@ -63,7 +63,7 @@ const Seo = () => {
           name: 'ООО «ЦИФРА»',
           alternateName: 'Цифровой институт фундаментального развития архитектуры',
           url: window.location.origin,
-          email: 'info@cifra-institute.ru',
+          email: 'cifrainst@mail.ru',
           image: HERO_IMAGE,
           description: DESC,
           areaServed: 'RU',

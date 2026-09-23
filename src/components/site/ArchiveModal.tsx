@@ -4,7 +4,7 @@ import { useBodyLock } from '@/lib/bodyLock';
 import { stages } from '@/data/stages';
 import { stageExtras } from '@/data/stageExtras';
 import { stageLabels } from '@/data/stageLabels';
-import { scrollTo } from './Header';
+import { openStage } from '@/lib/openStage';
 
 type Props = { open: boolean; onClose: () => void };
 
@@ -70,7 +70,7 @@ const ArchiveModal = ({ open, onClose }: Props) => {
               <button
                 onClick={() => {
                   onClose();
-                  setTimeout(() => scrollTo(g.id), 200);
+                  setTimeout(() => openStage(g.id), 200);
                 }}
                 className="flex w-full items-baseline gap-3 border-b border-border pb-2 text-left"
               >

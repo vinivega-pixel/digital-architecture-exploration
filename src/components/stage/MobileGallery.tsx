@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Icon from '@/components/ui/icon';
 import MobileFree, { stageCalcs } from './MobileFree';
 import StageTabs, { TAB_ROWS } from './StageTabs';
@@ -15,14 +15,23 @@ const MobileGallery = () => {
   const [tab, setTab] = useState<MobileTab | null>(null);
   const touch = useRef<{ x: number; y: number } | null>(null);
 
+
+  useEffect(() => {
+    const onOpen = (e: Event) => {
+      const id = (e as CustomEvent<string>).detail;
+      const n = stages.findIndex((s) => s.id === id);
+      if (n >= 0) {
+        setIdx(n);
+        setTab(null);
+      }
+    };
+    window.addEventListener('open-stage', onOpen);
+    return () => window.removeEventListener('open-stage', onOpen);
+  }, []);
+
   const stage = stages[idx];
   const { palette } = stage;
   const extra = stageExtras[stage.id];
-  const counts: Record<string, number> = {
-    calcs: stageCalcs(stage).length,
-    templates: (extra?.templates ?? stage.templates).length,
-    norms: (extra?.norms ?? stage.norms).length,
-  };
 
   useBodyLock(Boolean(tab));
 
@@ -138,7 +147,7 @@ const MobileGallery = () => {
         </button>
       </div>
 
-      <StageTabs stage={stage} counts={counts} onOpen={setTab} variant="mobile" />
+      <StageTabs onOpen={setTab} variant="mobile" />
     </section>
   );
 };

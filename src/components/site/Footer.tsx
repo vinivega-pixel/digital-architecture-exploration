@@ -3,6 +3,7 @@ import Icon from '@/components/ui/icon';
 import { projectCloud } from '@/data/projectCloud';
 import { useUi } from '@/context/UiContext';
 import { scrollTo } from './Header';
+import { openStage } from '@/lib/openStage';
 
 /** Размер плитки зависит от длины названия — облако выглядит живым. */
 const sizeOf = (name: string) => {
@@ -64,7 +65,7 @@ const Footer = () => {
           {projectCloud.map((p) => (
             <button
               key={p.name}
-              onClick={() => scrollTo(p.stage)}
+              onClick={() => openStage(p.stage)}
               className={`rounded-full border border-white/12 bg-white/[0.04] leading-snug text-white/70 transition-colors duration-300 hover:border-primary hover:text-white ${sizeOf(p.name)}`}
             >
               {p.name}

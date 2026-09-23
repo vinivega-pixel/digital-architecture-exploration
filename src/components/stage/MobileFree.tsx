@@ -36,6 +36,7 @@ const MobileFree = ({ stage, tab }: { stage: Stage; tab: MobileTab }) => {
   const templates = extra?.templates ?? stage.templates;
   const norms = extra?.norms ?? stage.norms;
   const [openCalc, setOpenCalc] = useState<string | null>(null);
+  const [calcQuery, setCalcQuery] = useState('');
   const active = calcs.find((c) => c.id === openCalc);
 
   const downloadTemplate = (title: string) => {
@@ -78,24 +79,60 @@ const MobileFree = ({ stage, tab }: { stage: Stage; tab: MobileTab }) => {
         </div>
       );
     }
+    const needle = calcQuery.trim().toLowerCase();
+    const shown = needle
+      ? calcs.filter(
+          (c) =>
+            c.title.toLowerCase().includes(needle) ||
+            (c.note ?? '').toLowerCase().includes(needle) ||
+            (c.basis ?? '').toLowerCase().includes(needle) ||
+            (c.formula ?? '').toLowerCase().includes(needle),
+        )
+      : calcs;
+
     return (
       <>
-        <p className="mb-4 text-[0.82rem] leading-relaxed" style={{ color: 'hsl(var(--muted-foreground))' }}>
-          {mobileCopy.free.calcHint}
+        <div className="mb-4 flex items-center gap-2.5 rounded-full border border-border bg-card px-4">
+          <Icon name="Search" size={16} className="shrink-0 text-muted-foreground" />
+          <input
+            value={calcQuery}
+            onChange={(e) => setCalcQuery(e.target.value)}
+            placeholder="Поиск по расчётам: свая, нагрузка, уклон…"
+            className="min-w-0 flex-1 bg-transparent py-3 text-[0.86rem] text-foreground outline-none"
+          />
+          {calcQuery ? (
+            <button type="button" onClick={() => setCalcQuery('')} aria-label="Очистить" className="p-1 text-muted-foreground">
+              <Icon name="X" size={15} />
+            </button>
+          ) : null}
+        </div>
+
+        <p className="mb-4 text-[0.82rem] leading-relaxed text-muted-foreground">
+          Найдено расчётов: {shown.length} из {calcs.length}
         </p>
+
         <div className="space-y-2">
-          {calcs.map((c) => (
+          {shown.map((c) => (
             <button
               key={c.id}
               type="button"
               onClick={() => setOpenCalc(c.id)}
-              className="flex w-full items-center gap-3 border px-3.5 py-3 text-left"
-              style={{ borderColor: 'hsl(var(--border))' }}
+              className="flex w-full items-center gap-3 rounded-xl border border-border px-4 py-3 text-left transition-colors hover:border-primary"
             >
-              <span className="flex-1 text-[0.86rem] leading-snug">{c.title}</span>
-              <Icon name="ChevronRight" size={15} className="shrink-0" style={{ color: 'hsl(var(--muted-foreground))' }} />
+              <span className="min-w-0 flex-1">
+                <span className="block text-[0.88rem] leading-snug text-foreground">{c.title}</span>
+                {c.formula ? (
+                  <span className="mt-0.5 block truncate text-[0.72rem] text-muted-foreground">{c.formula}</span>
+                ) : null}
+              </span>
+              <Icon name="ChevronRight" size={15} className="shrink-0 text-muted-foreground" />
             </button>
           ))}
+          {!shown.length ? (
+            <p className="py-8 text-center text-[0.86rem] text-muted-foreground">
+              Ничего не найдено. Попробуйте другой запрос.
+            </p>
+          ) : null}
         </div>
       </>
     );

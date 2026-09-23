@@ -2,10 +2,10 @@ import Icon from '@/components/ui/icon';
 import Reveal from './Reveal';
 import { stages } from '@/data/stages';
 import { stageShort } from '@/data/stageShort';
-import { scrollTo } from './Header';
+import { openStage } from '@/lib/openStage';
 
 /** Изометрическая иконка подбирается по смыслу этапа. */
-const ICONS = ['01', '02', '03', '03', '05', '05', '05', '05', '05', '07', '06'];
+const ICONS = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11'];
 
 const CHIPS = [
   { icon: 'Calculator', label: 'Расчёты' },
@@ -27,7 +27,7 @@ const PathLine = () => (
             От участка до эксплуатации — все одиннадцать этапов в единой цифровой среде.
           </p>
           <button
-            onClick={() => scrollTo('premium')}
+            onClick={() => openStage('premium')}
             className="mt-5 flex items-center gap-2 text-[0.88rem] font-medium text-primary"
           >
             Подробнее о системе
@@ -40,7 +40,7 @@ const PathLine = () => (
             <div className="flex min-w-[900px] items-start gap-1">
               {stages.map((s, i) => (
                 <div key={s.id} className="flex flex-1 items-start">
-                  <button onClick={() => scrollTo(s.id)} className="group flex-1 text-center">
+                  <button onClick={() => openStage(s.id)} className="group flex-1 text-center">
                     <span className="flex h-[92px] items-center justify-center">
                       <img
                         src={`/iso/${ICONS[i]}.png`}
