@@ -21,7 +21,7 @@ const StageTabs = ({ onOpen, variant, active }: Props) => {
   return (
     <div className={`bg-background ${variant === 'mobile' ? 'px-4 py-7' : 'mx-auto max-w-[1400px] px-5 py-12 md:px-10'}`}>
       <h3 className="text-center font-display text-[1.35rem] leading-tight text-foreground md:text-[1.8rem]">
-        Сделай сейчас
+        Сделай сейчас по выбранному этапу
       </h3>
 
       <div className={`mt-6 grid gap-3 ${variant === 'mobile' ? 'grid-cols-1' : 'grid-cols-2 lg:grid-cols-4'}`}>

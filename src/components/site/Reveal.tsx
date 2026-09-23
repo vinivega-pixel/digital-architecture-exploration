@@ -19,7 +19,7 @@ const Reveal = ({ children, delay = 0, className = '' }: { children: ReactNode; 
             io.unobserve(e.target);
           }
         }),
-      { threshold: 0.15, rootMargin: '0px 0px -10% 0px' },
+      { threshold: 0.01, rootMargin: '0px 0px -40px 0px' },
     );
     io.observe(el);
     return () => io.disconnect();
