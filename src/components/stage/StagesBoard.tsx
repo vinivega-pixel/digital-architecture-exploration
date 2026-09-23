@@ -44,15 +44,30 @@ const StagesBoard = () => {
   const stage = stages[idx];
   const active = TAB_ROWS.find((r) => r.id === tab);
 
+  const openTab = (t: MobileTab) => {
+    const next = tab === t ? null : t;
+    setTab(next);
+    if (next) {
+      requestAnimationFrame(() =>
+        setTimeout(() => {
+          const panel = document.getElementById('stage-panel');
+          if (!panel) return;
+          const top = panel.getBoundingClientRect().top + window.scrollY - 76;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }, 60),
+      );
+    }
+  };
+
   const shift = (step: number) => {
     setIdx((i) => (i + step + stages.length) % stages.length);
     setTab(null);
   };
 
   return (
-    <section id="stages" className="hidden scroll-mt-20 bg-background pt-14 md:block">
+    <section id="stages" className="hidden scroll-mt-[68px] bg-background pt-7 md:block">
       <div className="mx-auto max-w-[1400px] px-5 md:px-10">
-        <div className="relative h-[52vh] min-h-[340px] w-full overflow-hidden rounded-3xl">
+        <div className="relative h-[34vh] max-h-[300px] min-h-[220px] w-full overflow-hidden rounded-3xl">
           {stages.map((s, i) => (
             <img
               key={s.id}
@@ -90,16 +105,16 @@ const StagesBoard = () => {
             <span className="rounded-full border border-white/25 px-3.5 py-1 text-[0.68rem] uppercase tracking-[0.16em] text-white/75">
               Этап {stage.num} из {stages.length}
             </span>
-            <h2 className="mt-4 font-display text-[1.7rem] leading-[1.14] text-white lg:text-[2.2rem]">
+            <h2 className="mt-3 font-display text-[1.45rem] leading-[1.14] text-white lg:text-[1.85rem]">
               {stageLabels[stage.id] ?? stage.kicker}
             </h2>
-            <p className="mx-auto mt-5 max-w-[46em] text-[0.88rem] leading-[1.75] text-white/70">
+            <p className="mx-auto mt-3 line-clamp-2 max-w-[46em] text-[0.82rem] leading-[1.6] text-white/70">
               {stageLeads[stage.id] ?? stage.lead}
             </p>
           </div>
         </div>
 
-        <div className="-mx-5 mt-8 overflow-x-auto px-5 pb-2 md:mx-0 md:px-0">
+        <div className="-mx-5 mt-4 overflow-x-auto px-5 pb-1 md:mx-0 md:px-0">
           <div className="flex min-w-[900px] items-start gap-1">
             {stages.map((s, i) => {
               const on = i === idx;
@@ -110,14 +125,14 @@ const StagesBoard = () => {
                       setIdx(i);
                       setTab(null);
                     }}
-                    className="group flex-1 rounded-2xl px-1 py-2 text-center transition-colors"
+                    className="group flex-1 rounded-xl px-1 py-1.5 text-center transition-colors"
                     style={on ? { background: 'hsl(var(--primary) / 0.07)' } : undefined}
                   >
-                    <span className="flex h-[78px] items-center justify-center">
+                    <span className="flex h-[54px] items-center justify-center">
                       <img
                         src={`/iso/${STAGE_ICON[s.id]}.png`}
                         alt=""
-                        className="h-[70px] object-contain transition-transform duration-300 group-hover:-translate-y-1"
+                        className="h-[48px] object-contain transition-transform duration-300 group-hover:-translate-y-1"
                         style={{ opacity: on ? 1 : 0.5 }}
                       />
                     </span>
@@ -131,7 +146,7 @@ const StagesBoard = () => {
                     </span>
                   </button>
                   {i < stages.length - 1 ? (
-                    <Icon name="ChevronRight" size={13} className="mt-[36px] shrink-0 text-border" />
+                    <Icon name="ChevronRight" size={12} className="mt-[24px] shrink-0 text-border" />
                   ) : null}
                 </div>
               );
@@ -140,10 +155,10 @@ const StagesBoard = () => {
         </div>
       </div>
 
-      <StageTabs onOpen={(t) => setTab((v) => (v === t ? null : t))} variant="desktop" active={tab} />
+      <StageTabs onOpen={openTab} variant="desktop" active={tab} />
 
       {active ? (
-        <div className="bg-background px-5 pb-14 md:px-10">
+        <div id="stage-panel" className="scroll-mt-[76px] bg-background px-5 pb-14 md:px-10">
           <div className="mx-auto max-w-[1400px] border-t border-border pt-8">
             <MobileFree stage={stage} tab={active.id} />
           </div>

@@ -59,7 +59,12 @@ const Workspace = () => (
           <p className="mb-4 text-center text-[0.82rem] text-white/45">
             Живое демо рабочего окна — переключайте проекты, разделы и события
           </p>
-          <CabinetDemo />
+          <div className="hidden md:block">
+            <CabinetDemo />
+          </div>
+          <div className="md:hidden">
+            <CabinetDemo compact />
+          </div>
         </div>
       </Reveal>
     </div>

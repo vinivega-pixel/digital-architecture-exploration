@@ -58,7 +58,7 @@ const Premium = () => {
       <div className="mx-auto max-w-[1400px] px-5 md:px-10">
         <Reveal>
           <div className="mx-auto max-w-[52em] text-center">
-            <p className="rubric">Личный кабинет строителя</p>
+            <p className="rubric">Цифровой кабинет строителя</p>
             <h2 className="mt-4 font-display text-[1.9rem] leading-[1.15] text-foreground md:text-[2.7rem]">
               Бесплатной части хватает для работы. Что тогда в кабинете?
             </h2>

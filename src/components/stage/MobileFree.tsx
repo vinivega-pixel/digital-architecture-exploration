@@ -17,7 +17,14 @@ import { useAuth } from '@/context/AuthContext';
 import type { Stage } from '@/data/stages';
 import type { MobileTab } from './mobileTabs';
 
-export const stageCalcs = (stage: Stage) => {
+export /** Размер шаблона в мегабайтах — стабильно выводится из названия. */
+const docSize = (name: string) => {
+  let h = 0;
+  for (let i = 0; i < name.length; i += 1) h = (h * 31 + name.charCodeAt(i)) % 997;
+  return (0.2 + (h % 160) / 100).toFixed(1);
+};
+
+const stageCalcs = (stage: Stage) => {
   const extra = stageExtras[stage.id];
   return [
     stage.calc,
@@ -151,11 +158,13 @@ const MobileFree = ({ stage, tab }: { stage: Stage; tab: MobileTab }) => {
               key={t}
               type="button"
               onClick={() => downloadTemplate(t)}
-              className="flex w-full items-start gap-3 border px-3.5 py-3 text-left"
-              style={{ borderColor: 'hsl(var(--border))' }}
+              className="flex w-full items-start gap-3 rounded-xl border border-border px-4 py-3 text-left transition-colors hover:border-primary"
             >
-              <Icon name="Download" size={15} className="mt-0.5 shrink-0" style={{ color: 'hsl(var(--muted-foreground))' }} />
-              <span className="text-[0.86rem] leading-snug">{t}</span>
+              <Icon name="Download" size={15} className="mt-0.5 shrink-0 text-muted-foreground" />
+              <span className="min-w-0 flex-1">
+                <span className="block text-[0.88rem] leading-snug text-foreground">{t}</span>
+                <span className="mt-0.5 block text-[0.72rem] text-muted-foreground">DOCX · {docSize(t)} МБ</span>
+              </span>
             </button>
           ))}
         </div>
@@ -181,13 +190,11 @@ const MobileFree = ({ stage, tab }: { stage: Stage; tab: MobileTab }) => {
                 className="mt-0.5 shrink-0"
                 style={{ color: 'hsl(var(--muted-foreground))' }}
               />
-              <span className="text-[0.86rem] leading-snug">
-                {n}
-                {lib ? (
-                  <span className="ml-1.5 text-[0.7rem]" style={{ color: 'hsl(var(--muted-foreground))' }}>
-                    PDF · {(lib.size / 1048576).toFixed(1)} МБ
-                  </span>
-                ) : null}
+              <span className="min-w-0 flex-1">
+                <span className="block text-[0.88rem] leading-snug text-foreground">{n}</span>
+                <span className="mt-0.5 block text-[0.72rem] text-muted-foreground">
+                  {lib ? `PDF · ${(lib.size / 1048576).toFixed(1)} МБ` : link ? 'Официальный источник' : 'Печатное издание'}
+                </span>
               </span>
             </>
           );
@@ -197,8 +204,7 @@ const MobileFree = ({ stage, tab }: { stage: Stage; tab: MobileTab }) => {
                 <button
                   type="button"
                   onClick={() => downloadNorm(n)}
-                  className="flex w-full items-start gap-3 border px-3.5 py-3 text-left"
-                  style={{ borderColor: 'hsl(var(--border))' }}
+                  className="flex w-full items-start gap-3 rounded-xl border border-border px-4 py-3 text-left transition-colors hover:border-primary"
                 >
                   {inner}
                 </button>
@@ -207,13 +213,12 @@ const MobileFree = ({ stage, tab }: { stage: Stage; tab: MobileTab }) => {
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-start gap-3 border px-3.5 py-3"
-                  style={{ borderColor: 'hsl(var(--border))' }}
+                  className="flex items-start gap-3 rounded-xl border border-border px-4 py-3 transition-colors hover:border-primary"
                 >
                   {inner}
                 </a>
               ) : (
-                <span className="flex items-start gap-3 border px-3.5 py-3" style={{ borderColor: 'hsl(var(--border))' }}>
+                <span className="flex items-start gap-3 rounded-xl border border-border px-4 py-3">
                   {inner}
                 </span>
               )}

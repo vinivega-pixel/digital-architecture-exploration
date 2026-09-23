@@ -147,7 +147,7 @@ const MobileGallery = () => {
         </button>
       </div>
 
-      <StageTabs onOpen={setTab} variant="mobile" />
+      <StageTabs onOpen={(t) => setTab(t)} variant="mobile" />
     </section>
   );
 };
