@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import Icon from '@/components/ui/icon';
+import NormSearch from './NormSearch';
+import DocAudit from './DocAudit';
 import CalcCard from './CalcCard';
 import { downloadDoc } from '@/lib/printDoc';
 import { downloadRemote } from '@/lib/downloadFile';
@@ -99,6 +101,10 @@ const MobileFree = ({ stage, tab }: { stage: Stage; tab: MobileTab }) => {
     );
   }
 
+  if (tab === 'audit') {
+    return <DocAudit stage={stage} />;
+  }
+
   if (tab === 'templates') {
     return (
       <>
@@ -125,6 +131,7 @@ const MobileFree = ({ stage, tab }: { stage: Stage; tab: MobileTab }) => {
 
   return (
     <>
+      <NormSearch stage={stage} />
       <div className="space-y-2">
         {norms.map((n) => {
           const lib = findLibDoc(n);

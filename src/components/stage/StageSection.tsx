@@ -1,21 +1,34 @@
-import FreePanel from './FreePanel';
-import PremiumPanel from './PremiumPanel';
-import { stageCalcs } from './MobileFree';
+import { useState } from 'react';
+import MobileFree, { stageCalcs } from './MobileFree';
+import StageTabs, { TAB_ROWS } from './StageTabs';
 import { stageExtras } from '@/data/stageExtras';
 import { stageLabels } from '@/data/stageLabels';
+import { stageLeads } from '@/data/stageLeads';
 import type { Stage } from '@/data/stages';
+import type { MobileTab } from './mobileTabs';
 
 const StageSection = ({ stage }: { stage: Stage }) => {
   const { palette } = stage;
   const heading = stageLabels[stage.id] ?? stage.kicker;
   const extra = stageExtras[stage.id];
-  const calcs = stageCalcs(stage);
-  const templates = extra?.templates ?? stage.templates;
-  const norms = extra?.norms ?? stage.norms;
+  const [tab, setTab] = useState<MobileTab | null>(null);
+
+  const counts: Record<string, number> = {
+    calcs: stageCalcs(stage).length,
+    templates: (extra?.templates ?? stage.templates).length,
+    norms: (extra?.norms ?? stage.norms).length,
+  };
+
+  const active = TAB_ROWS.find((r) => r.id === tab);
 
   return (
-    <section id={stage.id} data-stage={stage.id} className="relative hidden scroll-mt-16 md:block" style={{ background: palette.rightBg }}>
-      <div className="relative h-[62vh] min-h-[384px] w-full overflow-hidden md:h-[79vh]">
+    <section
+      id={stage.id}
+      data-stage={stage.id}
+      className="relative hidden scroll-mt-16 md:block"
+      style={{ background: palette.rightBg }}
+    >
+      <div className="relative h-[62vh] min-h-[384px] w-full overflow-hidden md:h-[72vh]">
         <img
           src={stage.image}
           alt={stage.imageAlt}
@@ -30,58 +43,38 @@ const StageSection = ({ stage }: { stage: Stage }) => {
         <div
           className="absolute inset-0"
           style={{
-            background: `radial-gradient(ellipse 62% 48% at 50% 50%, ${palette.rightBg}b8 0%, ${palette.rightBg}55 58%, transparent 100%)`,
+            background: `radial-gradient(ellipse 64% 50% at 50% 50%, ${palette.rightBg}b8 0%, ${palette.rightBg}55 58%, transparent 100%)`,
           }}
         />
 
-        <div className="absolute inset-0 z-[2] grid grid-cols-1 items-center px-6 md:grid-cols-[1fr_auto_1fr] md:gap-8 md:px-[48px] lg:gap-12">
-          <p
-            className="ml-auto hidden max-w-[12em] border-r-2 pr-5 text-right text-[0.6rem] uppercase leading-[1.5] tracking-[0.1em] md:block lg:text-[0.68rem]"
-            style={{ color: palette.rightFg, borderColor: `${palette.rightFg}66` }}
-          >
-            Полезная сторона
-            <span className="mt-1.5 block text-[0.95em] normal-case leading-snug tracking-[0.02em]" style={{ color: `${palette.rightFg}bf` }}>
-              Выполни самостоятельно — мы даём инструмент
-            </span>
+        <div className="absolute inset-0 z-[2] flex flex-col items-center justify-center px-8 text-center">
+          <p className="text-[0.62rem] uppercase tracking-[0.24em]" style={{ color: `${palette.rightFg}cc` }}>
+            Этап {stage.num}
           </p>
-
-          <div className="mx-auto max-w-[19em] px-2 text-center md:max-w-[21em]">
-            <p
-              className="text-[0.6rem] uppercase tracking-[0.24em] md:text-[0.64rem]"
-              style={{ color: `${palette.rightFg}cc` }}
-            >
-              Этап {stage.num}
-            </p>
-            <h2
-              className="mt-2 font-display text-[1.15rem] uppercase leading-[1.12] tracking-[0.03em] sm:text-[1.35rem] md:text-[1.7rem]"
-              style={{ color: palette.rightFg }}
-            >
-              {heading}
-            </h2>
-            <p
-              className="mx-auto mt-3 text-[0.72rem] leading-relaxed md:text-[0.76rem]"
-              style={{ color: `${palette.rightFg}cc` }}
-            >
-              {stage.lead}
-            </p>
-          </div>
-
-          <p
-            className="mr-auto hidden max-w-[12em] border-l-2 pl-5 text-left text-[0.6rem] uppercase leading-[1.5] tracking-[0.1em] md:block lg:text-[0.68rem]"
-            style={{ color: palette.rightFg, borderColor: `${palette.rightFg}66` }}
+          <h2
+            className="mt-2.5 font-display text-[1.6rem] uppercase leading-[1.12] tracking-[0.03em] lg:text-[2.1rem]"
+            style={{ color: palette.rightFg }}
           >
-            Премиум-сторона
-            <span className="mt-1.5 block text-[0.95em] normal-case leading-snug tracking-[0.02em]" style={{ color: `${palette.rightFg}bf` }}>
-              Доверьте институту — получите результат
-            </span>
+            {heading}
+          </h2>
+          <p
+            className="mx-auto mt-5 max-w-[46em] text-[0.86rem] leading-[1.75]"
+            style={{ color: `${palette.rightFg}c4` }}
+          >
+            {stageLeads[stage.id] ?? stage.lead}
           </p>
         </div>
       </div>
 
-      <div className="hidden grid-cols-2 md:grid">
-        <FreePanel stage={stage} />
-        <PremiumPanel stage={stage} />
-      </div>
+      <StageTabs stage={stage} counts={counts} onOpen={(t) => setTab((v) => (v === t ? null : t))} variant="desktop" active={tab} />
+
+      {active ? (
+        <div className="px-8 pb-10" style={{ background: palette.leftBg, color: palette.leftFg }}>
+          <div className="mx-auto max-w-5xl border-t pt-7" style={{ borderColor: `${palette.leftFg}26` }}>
+            <MobileFree stage={stage} tab={active.id} />
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 };

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Icon from '@/components/ui/icon';
 import { stages } from '@/data/stages';
 import { navLabels } from '@/data/stageLabels';
 
@@ -72,6 +73,17 @@ const StageNav = () => {
             </li>
           );
         })}
+        <li className="mt-1.5 flex justify-center border-t border-[rgba(20,32,47,.14)] pt-1.5">
+          <button
+            onClick={() => document.getElementById('premium')?.scrollIntoView({ behavior: 'smooth' })}
+            aria-label="Услуги и цифровые продукты"
+            title="Услуги и цифровые продукты"
+            className="flex h-[22px] w-[22px] items-center justify-center rounded-full"
+            style={{ background: 'var(--hero-accent)', color: '#10192b' }}
+          >
+            <Icon name="Sparkles" size={12} />
+          </button>
+        </li>
       </ul>
     </nav>
   );

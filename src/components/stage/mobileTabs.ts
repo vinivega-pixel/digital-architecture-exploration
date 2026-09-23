@@ -1,1 +1,1 @@
-export type MobileTab = 'calcs' | 'templates' | 'norms' | 'agent' | 'repair' | 'products';
+export type MobileTab = 'calcs' | 'templates' | 'norms' | 'audit' | 'agent' | 'repair' | 'products';

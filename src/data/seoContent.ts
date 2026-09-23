@@ -5,6 +5,7 @@ import { formulaCalcs } from './formulaCalcs';
 import { hiddenCalcIds } from './hiddenCalcs';
 import { libDocs } from './libDocs';
 import { stageLabels } from './stageLabels';
+import { stageLeads } from './stageLeads';
 
 const esc = (s: string) =>
   String(s)
@@ -52,7 +53,7 @@ export const buildSeoHtml = (): string => {
 
     parts.push(`<section id="seo-${s.id}">
 <h2>Этап ${s.num}. ${esc(stageLabels[s.id] ?? s.kicker)}</h2>
-<p>${esc(s.lead)}</p>
+<p>${esc(stageLeads[s.id] ?? s.lead)}</p>
 <h3>Калькуляторы этапа «${esc(s.phase)}» — ${calcs.length} расчётов</h3>
 <ul>`);
     calcs.forEach((c) => {

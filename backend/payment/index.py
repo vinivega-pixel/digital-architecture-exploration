@@ -17,9 +17,14 @@ CORS = {
 }
 
 PLANS = {
-    'day': {'title': 'Премиум-доступ на сутки', 'amount': 999, 'days': 1},
-    'work': {'title': 'Премиум «Работа» — до 5 проектов, CRM и офлайн-программы', 'amount': 5990, 'days': 30},
-    'month': {'title': 'Премиум-доступ на месяц, всё включено', 'amount': 99999, 'days': 30},
+    'smeta': {'title': 'Аудит сметной документации', 'amount': 1500, 'days': 30},
+    'express': {'title': 'Экспресс-проверка проектной документации', 'amount': 3000, 'days': 30},
+    'cabinet': {'title': 'Дневной кабинет — подписка на месяц', 'amount': 10000, 'days': 30},
+    'cabinet_year': {'title': 'Дневной кабинет — подписка на год', 'amount': 95000, 'days': 365},
+    'support': {'title': 'Кабинет с сопровождением специалистов', 'amount': 18000, 'days': 30},
+    'docs': {'title': 'Кабинет с разработкой документации', 'amount': 39000, 'days': 30},
+    'pd': {'title': 'Разработка проектной документации', 'amount': 100, 'days': 30},
+    'developer': {'title': 'Пакет застройщика — до 20 кабинетов', 'amount': 240000, 'days': 365},
 }
 
 ROBOKASSA_URL = 'https://auth.robokassa.ru/Merchant/Index.aspx'
