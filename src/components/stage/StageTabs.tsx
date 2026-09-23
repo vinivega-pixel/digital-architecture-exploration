@@ -19,20 +19,13 @@ type Props = {
 
 /** Блок «Сделай сейчас»: четыре равные вкладки этапа. */
 const StageTabs = ({ stage, counts, onOpen, variant, active }: Props) => {
-  const { palette } = stage;
-  const fg = palette.leftFg;
   const toTariffs = () => document.getElementById('premium')?.scrollIntoView({ behavior: 'smooth' });
 
   return (
-    <div
-      className={variant === 'mobile' ? 'px-4 py-5' : 'px-8 py-8'}
-      style={{ background: palette.leftBg, color: fg }}
-    >
-      <p className="text-[0.62rem] uppercase tracking-[0.2em]" style={{ color: `${fg}99` }}>
-        Сделай сейчас
-      </p>
+    <div className={`bg-background ${variant === 'mobile' ? 'px-4 py-6' : 'mx-auto max-w-[1400px] px-5 py-10 md:px-10'}`}>
+      <p className="text-[0.68rem] uppercase tracking-[0.18em] text-muted-foreground">Сделай сейчас</p>
 
-      <div className={`mt-3.5 grid gap-2 ${variant === 'mobile' ? 'grid-cols-2' : 'grid-cols-4'}`}>
+      <div className={`mt-4 grid gap-3 ${variant === 'mobile' ? 'grid-cols-2' : 'grid-cols-4'}`}>
         {TAB_ROWS.map((r) => {
           const on = active === r.id;
           return (
@@ -40,16 +33,14 @@ const StageTabs = ({ stage, counts, onOpen, variant, active }: Props) => {
               key={r.id}
               type="button"
               onClick={() => onOpen(r.id)}
-              className="flex min-h-[54px] flex-col items-center justify-center gap-1.5 border px-2 py-3 text-center transition-colors"
-              style={{
-                borderColor: on ? fg : `${fg}30`,
-                background: on ? `${fg}0f` : 'transparent',
-              }}
+              className={`flex min-h-[86px] flex-col items-center justify-center gap-2 rounded-2xl border px-3 py-5 text-center transition-colors ${
+                on ? 'border-primary bg-primary/5 text-foreground' : 'border-border bg-card text-foreground hover:border-primary/50'
+              }`}
             >
-              <Icon name={r.icon} size={17} style={{ color: `${fg}b5` }} />
-              <span className="text-[0.8rem] font-medium leading-tight">{r.label}</span>
+              <Icon name={r.icon} size={19} className={on ? 'text-primary' : 'text-muted-foreground'} />
+              <span className="text-[0.85rem] font-medium leading-tight">{r.label}</span>
               {counts[r.id] ? (
-                <span className="text-[0.66rem] tabular-nums" style={{ color: `${fg}7d` }}>
+                <span className="text-[0.7rem] tabular-nums text-muted-foreground">
                   {counts[r.id]}
                 </span>
               ) : null}
@@ -61,13 +52,10 @@ const StageTabs = ({ stage, counts, onOpen, variant, active }: Props) => {
       <button
         type="button"
         onClick={toTariffs}
-        className="mt-4 text-[0.76rem] leading-relaxed transition-opacity hover:opacity-70"
-        style={{ color: `${fg}9e` }}
+        className="mt-5 text-[0.82rem] leading-relaxed text-muted-foreground transition-opacity hover:opacity-70"
       >
         Активация личного кабинета строителя —{' '}
-        <span className="underline underline-offset-4" style={{ color: fg }}>
-          подробнее
-        </span>
+        <span className="font-medium text-primary underline underline-offset-4">подробнее</span>
       </button>
     </div>
   );

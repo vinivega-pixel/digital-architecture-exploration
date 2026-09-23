@@ -30,7 +30,7 @@ export const stageCalcs = (stage: Stage) => {
 const MobileFree = ({ stage, tab }: { stage: Stage; tab: MobileTab }) => {
   const { trackDownload } = useAuth();
   const { palette } = stage;
-  const fg = palette.leftFg;
+  const fg = 'hsl(var(--foreground))';
   const extra = stageExtras[stage.id];
   const calcs = stageCalcs(stage);
   const templates = extra?.templates ?? stage.templates;
@@ -69,7 +69,7 @@ const MobileFree = ({ stage, tab }: { stage: Stage; tab: MobileTab }) => {
             type="button"
             onClick={() => setOpenCalc(null)}
             className="mb-4 inline-flex items-center gap-2 text-[0.76rem] uppercase tracking-[0.1em]"
-            style={{ color: `${fg}b0` }}
+            style={{ color: 'hsl(var(--muted-foreground))' }}
           >
             <Icon name="ChevronLeft" size={15} />
             Все расчёты ({calcs.length})
@@ -80,7 +80,7 @@ const MobileFree = ({ stage, tab }: { stage: Stage; tab: MobileTab }) => {
     }
     return (
       <>
-        <p className="mb-4 text-[0.82rem] leading-relaxed" style={{ color: `${fg}a0` }}>
+        <p className="mb-4 text-[0.82rem] leading-relaxed" style={{ color: 'hsl(var(--muted-foreground))' }}>
           {mobileCopy.free.calcHint}
         </p>
         <div className="space-y-2">
@@ -90,10 +90,10 @@ const MobileFree = ({ stage, tab }: { stage: Stage; tab: MobileTab }) => {
               type="button"
               onClick={() => setOpenCalc(c.id)}
               className="flex w-full items-center gap-3 border px-3.5 py-3 text-left"
-              style={{ borderColor: `${fg}30` }}
+              style={{ borderColor: 'hsl(var(--border))' }}
             >
               <span className="flex-1 text-[0.86rem] leading-snug">{c.title}</span>
-              <Icon name="ChevronRight" size={15} className="shrink-0" style={{ color: `${fg}80` }} />
+              <Icon name="ChevronRight" size={15} className="shrink-0" style={{ color: 'hsl(var(--muted-foreground))' }} />
             </button>
           ))}
         </div>
@@ -115,14 +115,14 @@ const MobileFree = ({ stage, tab }: { stage: Stage; tab: MobileTab }) => {
               type="button"
               onClick={() => downloadTemplate(t)}
               className="flex w-full items-start gap-3 border px-3.5 py-3 text-left"
-              style={{ borderColor: `${fg}30` }}
+              style={{ borderColor: 'hsl(var(--border))' }}
             >
-              <Icon name="Download" size={15} className="mt-0.5 shrink-0" style={{ color: `${fg}90` }} />
+              <Icon name="Download" size={15} className="mt-0.5 shrink-0" style={{ color: 'hsl(var(--muted-foreground))' }} />
               <span className="text-[0.86rem] leading-snug">{t}</span>
             </button>
           ))}
         </div>
-        <p className="mt-4 text-[0.76rem] leading-relaxed" style={{ color: `${fg}90` }}>
+        <p className="mt-4 text-[0.76rem] leading-relaxed" style={{ color: 'hsl(var(--muted-foreground))' }}>
           {mobileCopy.free.templatesHint}
         </p>
       </>
@@ -142,12 +142,12 @@ const MobileFree = ({ stage, tab }: { stage: Stage; tab: MobileTab }) => {
                 name={lib ? 'Download' : link ? 'ExternalLink' : 'BookOpen'}
                 size={15}
                 className="mt-0.5 shrink-0"
-                style={{ color: `${fg}90` }}
+                style={{ color: 'hsl(var(--muted-foreground))' }}
               />
               <span className="text-[0.86rem] leading-snug">
                 {n}
                 {lib ? (
-                  <span className="ml-1.5 text-[0.7rem]" style={{ color: `${fg}80` }}>
+                  <span className="ml-1.5 text-[0.7rem]" style={{ color: 'hsl(var(--muted-foreground))' }}>
                     PDF · {(lib.size / 1048576).toFixed(1)} МБ
                   </span>
                 ) : null}
@@ -161,7 +161,7 @@ const MobileFree = ({ stage, tab }: { stage: Stage; tab: MobileTab }) => {
                   type="button"
                   onClick={() => downloadNorm(n)}
                   className="flex w-full items-start gap-3 border px-3.5 py-3 text-left"
-                  style={{ borderColor: `${fg}30` }}
+                  style={{ borderColor: 'hsl(var(--border))' }}
                 >
                   {inner}
                 </button>
@@ -171,12 +171,12 @@ const MobileFree = ({ stage, tab }: { stage: Stage; tab: MobileTab }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-start gap-3 border px-3.5 py-3"
-                  style={{ borderColor: `${fg}30` }}
+                  style={{ borderColor: 'hsl(var(--border))' }}
                 >
                   {inner}
                 </a>
               ) : (
-                <span className="flex items-start gap-3 border px-3.5 py-3" style={{ borderColor: `${fg}22` }}>
+                <span className="flex items-start gap-3 border px-3.5 py-3" style={{ borderColor: 'hsl(var(--border))' }}>
                   {inner}
                 </span>
               )}
@@ -184,7 +184,7 @@ const MobileFree = ({ stage, tab }: { stage: Stage; tab: MobileTab }) => {
           );
         })}
       </div>
-      <p className="mt-4 text-[0.76rem] leading-relaxed" style={{ color: `${fg}90` }}>
+      <p className="mt-4 text-[0.76rem] leading-relaxed" style={{ color: 'hsl(var(--muted-foreground))' }}>
         {mobileCopy.free.normsHint}
       </p>
     </>

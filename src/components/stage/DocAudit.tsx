@@ -11,7 +11,7 @@ const used = () => Number(localStorage.getItem(LIMIT_KEY) ?? '0');
 
 /** Бесплатный анализ документа: не более двух файлов, по одному за запрос. */
 const DocAudit = ({ stage }: { stage: Stage }) => {
-  const fg = stage.palette.leftFg;
+  const fg = 'hsl(var(--foreground))';
   const [file, setFile] = useState<File | null>(null);
   const [note, setNote] = useState('');
   const [answer, setAnswer] = useState('');
@@ -62,7 +62,7 @@ const DocAudit = ({ stage }: { stage: Stage }) => {
 
   return (
     <div>
-      <p className="text-[0.86rem] leading-relaxed" style={{ color: `${fg}c0` }}>
+      <p className="text-[0.86rem] leading-relaxed" style={{ color: 'hsl(var(--muted-foreground))' }}>
         Загрузите документ этапа — ассистент найдёт ошибки, несоответствия нормам и риски. Бесплатно два документа,
         по одному за запрос.
       </p>
@@ -71,7 +71,7 @@ const DocAudit = ({ stage }: { stage: Stage }) => {
         type="button"
         onClick={() => inputRef.current?.click()}
         className="mt-4 flex w-full items-center justify-center gap-2.5 border px-4 py-5 text-[0.85rem]"
-        style={{ borderColor: `${fg}40`, borderStyle: 'dashed', color: `${fg}c0` }}
+        style={{ borderColor: 'hsl(var(--border))', borderStyle: 'dashed', color: 'hsl(var(--muted-foreground))' }}
       >
         <Icon name={file ? 'FileCheck' : 'Upload'} size={17} />
         {file ? file.name : 'Выбрать документ'}
@@ -89,7 +89,7 @@ const DocAudit = ({ stage }: { stage: Stage }) => {
       />
 
       <div className="mt-3 flex items-center justify-between gap-3">
-        <span className="text-[0.74rem]" style={{ color: `${fg}90` }}>
+        <span className="text-[0.74rem]" style={{ color: 'hsl(var(--muted-foreground))' }}>
           Осталось бесплатных проверок: {left}
         </span>
         <button
@@ -97,7 +97,7 @@ const DocAudit = ({ stage }: { stage: Stage }) => {
           onClick={run}
           disabled={!file || busy}
           className="flex items-center gap-2 px-5 py-3 text-[0.78rem] font-medium uppercase tracking-[0.1em] disabled:opacity-40"
-          style={{ background: fg, color: stage.palette.leftBg }}
+          style={{ background: fg, color: 'hsl(var(--background))' }}
         >
           {busy ? <Icon name="Loader" size={15} className="animate-spin" /> : <Icon name="ScanSearch" size={15} />}
           Проверить
@@ -111,7 +111,7 @@ const DocAudit = ({ stage }: { stage: Stage }) => {
       ) : null}
 
       {answer ? (
-        <div className="mt-4 whitespace-pre-line border px-4 py-4 text-[0.85rem] leading-relaxed" style={{ borderColor: `${fg}30` }}>
+        <div className="mt-4 whitespace-pre-line border px-4 py-4 text-[0.85rem] leading-relaxed" style={{ borderColor: 'hsl(var(--border))' }}>
           {answer}
         </div>
       ) : null}

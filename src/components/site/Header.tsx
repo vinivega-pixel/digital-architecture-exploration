@@ -10,33 +10,37 @@ import AgentModal from './AgentModal';
 import AdminPanel from '@/components/admin/AdminPanel';
 
 export const NAV = [
-  { id: 'uchastok', label: 'Участок' },
-  { id: 'izyskaniya', label: 'Изыскания' },
-  { id: 'pd', label: 'Проектная документация' },
-  { id: 'arkr', label: 'АР и КР' },
-  { id: 'eom', label: 'Электроснабжение' },
-  { id: 'vk', label: 'Водоснабжение' },
-  { id: 'ovik', label: 'Отопление и вентиляция' },
-  { id: 'ss', label: 'Безопасность' },
-  { id: 'roof', label: 'Кровля' },
-  { id: 'blago', label: 'Благоустройство' },
-  { id: 'priemka', label: 'Приёмка' },
-  { id: 'premium', label: 'Премиум' },
+  { id: 'tools', label: 'Инструменты' },
+  { id: 'path', label: 'Этапы' },
+  { id: 'ai', label: 'ИИ' },
+  { id: 'audience', label: 'Кому это нужно' },
+  { id: 'premium', label: 'Услуги' },
+  { id: 'about', label: 'О компании' },
 ];
 
 export const scrollTo = (id: string) =>
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
-const Logo = () => (
-  <svg viewBox="0 0 30 34" fill="none" aria-hidden="true" className="h-[34px] w-[30px]">
-    <path d="M4 6h22M4 6v22h22V6" stroke="currentColor" strokeWidth="1.4" />
-    <path d="M11 6v22M19 6v22M4 14h22M4 21h22" stroke="currentColor" strokeWidth="1" />
-  </svg>
+const Logo = ({ light }: { light?: boolean }) => (
+  <span className="flex items-center gap-2.5">
+    <span
+      className="flex h-9 w-9 items-center justify-center rounded-[10px]"
+      style={{ background: light ? '#ffffff' : 'hsl(var(--primary))' }}
+    >
+      <Icon name="Hexagon" size={19} style={{ color: light ? '#0f1d2e' : '#ffffff' }} />
+    </span>
+    <span
+      className="font-display text-[1.28rem] tracking-[0.04em]"
+      style={{ color: light ? '#ffffff' : 'hsl(var(--foreground))' }}
+    >
+      ЦИФРА
+    </span>
+  </span>
 );
 
 const Header = () => {
   const { user, premium, isAdmin } = useAuth();
-  const { openAuth, openAccount, openOffer } = useUi();
+  const { openAuth, openAccount } = useUi();
   const [open, setOpen] = useState(false);
   const [qr, setQr] = useState(false);
   const [info, setInfo] = useState(false);
@@ -58,187 +62,141 @@ const Header = () => {
     scrollTo(id);
   };
 
+  const light = !scrolled;
+  const fg = light ? '#ffffff' : 'hsl(var(--foreground))';
+
   return (
     <>
       <header
-        className={`fixed left-6 right-6 z-50 flex animate-fade-in items-center px-6 transition-all duration-500 md:left-[60px] md:right-[60px] md:px-12 ${
-          scrolled ? 'top-0 h-[52px]' : 'top-3 h-[56px] md:h-[68px]'
+        className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+          scrolled ? 'border-b border-border bg-background/95 backdrop-blur-md' : 'bg-transparent'
         }`}
-        style={{ background: 'var(--hero-x-bar)' }}
       >
-        <nav className="hidden flex-1 gap-9 xl:flex">
-          {NAV.slice(0, 3).map((n) => (
+        <div className="mx-auto flex h-[68px] max-w-[1400px] items-center gap-6 px-5 md:px-10">
+          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} aria-label="Наверх">
+            <Logo light={light} />
+          </button>
+
+          <nav className="ml-4 hidden flex-1 items-center gap-7 lg:flex">
+            {NAV.map((n) => (
+              <button
+                key={n.id}
+                onClick={() => go(n.id)}
+                className="text-[0.86rem] transition-opacity hover:opacity-70"
+                style={{ color: fg }}
+              >
+                {n.label}
+              </button>
+            ))}
+          </nav>
+
+          <div className="ml-auto hidden items-center gap-3 lg:flex">
             <button
-              key={n.id}
-              onClick={() => go(n.id)}
-              className="link-underline text-[0.82rem] font-medium uppercase tracking-[0.1em]" style={{ color: 'var(--hero-bar-fg)' }}
+              onClick={() => setLib(true)}
+              aria-label="Поиск по базе знаний"
+              className="p-2 transition-opacity hover:opacity-70"
+              style={{ color: fg }}
             >
-              {n.label}
+              <Icon name="Search" size={19} />
             </button>
-          ))}
-        </nav>
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          aria-label="Наверх"
-          className="hidden xl:absolute xl:left-1/2 xl:top-1/2 xl:block xl:-translate-x-1/2 xl:-translate-y-1/2"
-          style={{ color: 'var(--hero-bar-fg)' }}
-        >
-          <Logo />
-        </button>
-        <div className="ml-auto hidden items-center gap-3 xl:flex">
-          {(premium || isAdmin) && (
-            <a
-              href="/cabinet"
-              rel="noopener"
-              aria-label="Премиум-кабинет"
-              title="Премиум-кабинет"
-              className="transition-opacity hover:opacity-70" style={{ color: 'var(--hero-bar-fg)' }}
-            >
-              <Icon name="LayoutDashboard" size={21} />
-            </a>
-          )}
-          {isAdmin ? (
-            <button
-              onClick={() => setAdmin(true)}
-              aria-label="Кабинет администратора"
-              title="Кабинет администратора"
-              className="transition-opacity hover:opacity-70" style={{ color: 'var(--hero-bar-fg)' }}
-            >
-              <Icon name="ShieldHalf" size={21} />
-            </button>
-          ) : null}
+            {isAdmin ? (
+              <button onClick={() => setAdmin(true)} aria-label="Администратор" className="p-2" style={{ color: fg }}>
+                <Icon name="ShieldHalf" size={19} />
+              </button>
+            ) : null}
+            {user ? (
+              <button
+                onClick={openAccount}
+                className="flex items-center gap-2 rounded-full px-5 py-2.5 text-[0.84rem] font-medium"
+                style={light ? { background: '#ffffff', color: '#0f1d2e' } : { background: 'hsl(var(--primary))', color: '#fff' }}
+              >
+                <Icon name={premium ? 'ShieldCheck' : 'User'} size={15} />
+                Кабинет
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => openAuth('login')}
+                  className="text-[0.86rem] transition-opacity hover:opacity-70"
+                  style={{ color: fg }}
+                >
+                  Войти
+                </button>
+                <button
+                  onClick={() => openAuth('register')}
+                  className="rounded-full px-5 py-2.5 text-[0.84rem] font-medium transition-opacity hover:opacity-90"
+                  style={light ? { background: '#ffffff', color: '#0f1d2e' } : { background: 'hsl(var(--primary))', color: '#fff' }}
+                >
+                  Начать работу
+                </button>
+              </>
+            )}
+          </div>
+
           <button
-            onClick={() => setLib(true)}
-            aria-label="Библиотека норм"
-            title="Библиотека норм и сводов правил"
-            className="transition-opacity hover:opacity-70" style={{ color: 'var(--hero-bar-fg)' }}
+            onClick={() => setOpen((v) => !v)}
+            aria-label="Меню"
+            className="ml-auto p-2 lg:hidden"
+            style={{ color: open ? 'hsl(var(--foreground))' : fg }}
           >
-            <Icon name="Library" size={21} />
-          </button>
-          <button
-            onClick={() => setArchive(true)}
-            aria-label="Архив шаблонов"
-            title="Архив шаблонов документов"
-            className="transition-opacity hover:opacity-70"
-            style={{ color: 'var(--hero-bar-fg)' }}
-          >
-            <Icon name="Archive" size={21} />
-          </button>
-          <button
-            onClick={() => setInfo(true)}
-            aria-label="Как работает институт"
-            title="Как работает институт"
-            className="transition-opacity hover:opacity-70"
-            style={{ color: 'var(--hero-bar-fg)' }}
-          >
-            <Icon name="Info" size={21} />
-          </button>
-          <button
-            onClick={openOffer}
-            aria-label="Публичная оферта"
-            title="Публичная оферта"
-            className="transition-opacity hover:opacity-70" style={{ color: 'var(--hero-bar-fg)' }}
-          >
-            <Icon name="FileText" size={21} />
-          </button>
-          <button
-            onClick={() => setQr(true)}
-            aria-label="QR-код и ссылка на сайт"
-            title="QR-код и ссылка"
-            className="transition-opacity hover:opacity-70" style={{ color: 'var(--hero-bar-fg)' }}
-          >
-            <Icon name="QrCode" size={21} />
-          </button>
-          <button
-            onClick={() => setAgent(true)}
-            aria-label="ИИ-ассистент"
-            title="ИИ-ассистент института"
-            className="transition-opacity hover:opacity-70"
-            style={{ color: 'var(--hero-bar-fg)' }}
-          >
-            <Icon name="Bot" size={21} />
-          </button>
-          {user ? (
-            <button
-              onClick={openAccount}
-              className="flex items-center gap-2 border px-4 py-[11px] text-[0.76rem] font-medium uppercase tracking-[0.1em] transition-colors duration-300" style={{ borderColor: 'var(--hero-bar-fg)', color: 'var(--hero-bar-fg)' }}
-            >
-              <Icon name={premium ? 'ShieldCheck' : 'User'} size={15} />
-              {premium ? 'Премиум активен' : 'Кабинет'}
-            </button>
-          ) : (
-            <button
-              onClick={() => openAuth('login')}
-              className="link-underline text-[0.82rem] font-medium uppercase tracking-[0.1em]" style={{ color: 'var(--hero-bar-fg)' }}
-            >
-              Войти
-            </button>
-          )}
-          <button
-            onClick={() => go('premium')}
-            className="border px-[22px] py-[11px] text-[0.78rem] font-medium uppercase tracking-[0.12em] transition-colors duration-300" style={{ borderColor: 'var(--hero-bar-fg)', color: 'var(--hero-bar-fg)' }}
-          >
-            Премиум
-          </button>
-        </div>
-        <div className="ml-auto flex flex-1 items-center justify-between xl:hidden">
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            aria-label="Наверх"
-            className="p-1.5"
-            style={{ color: 'var(--hero-bar-fg)' }}
-          >
-            <Icon name="ArrowUp" size={21} />
-          </button>
-          <button onClick={() => setLib(true)} aria-label="Библиотека норм" className="p-1.5" style={{ color: 'var(--hero-bar-fg)' }}>
-            <Icon name="Library" size={21} />
-          </button>
-          <button onClick={() => setArchive(true)} aria-label="Архив шаблонов" className="p-1.5" style={{ color: 'var(--hero-bar-fg)' }}>
-            <Icon name="Archive" size={21} />
-          </button>
-          <button onClick={() => setInfo(true)} aria-label="Об институте" className="p-1.5" style={{ color: 'var(--hero-bar-fg)' }}>
-            <Icon name="Info" size={21} />
-          </button>
-          <button onClick={openOffer} aria-label="Публичная оферта" className="p-1.5" style={{ color: 'var(--hero-bar-fg)' }}>
-            <Icon name="FileText" size={21} />
-          </button>
-          <button onClick={() => setQr(true)} aria-label="QR-код и ссылка" className="p-1.5" style={{ color: 'var(--hero-bar-fg)' }}>
-            <Icon name="QrCode" size={21} />
-          </button>
-          <button onClick={() => setAgent(true)} aria-label="ИИ-ассистент" className="p-1.5" style={{ color: 'var(--hero-bar-fg)' }}>
-            <Icon name="Bot" size={21} />
-          </button>
-          <button
-            onClick={() => (user ? openAccount() : openAuth('login'))}
-            aria-label={user ? 'Личный кабинет' : 'Войти'}
-            className="p-1.5"
-            style={{ color: 'var(--hero-bar-fg)' }}
-          >
-            <Icon name={user ? (premium ? 'ShieldCheck' : 'User') : 'LogIn'} size={21} />
-          </button>
-          <button onClick={() => setOpen((v) => !v)} aria-label="Этапы строительства" className="p-1.5" style={{ color: 'var(--hero-bar-fg)' }}>
-            <Icon name={open ? 'X' : 'Menu'} size={22} />
+            <Icon name={open ? 'X' : 'Menu'} size={24} />
           </button>
         </div>
       </header>
 
       {open && (
-        <div
-          className="fixed inset-0 z-40 animate-fade-in overflow-y-auto bg-background/95 px-6 pb-10 pt-28 backdrop-blur-sm xl:hidden"
-          style={{ animationDuration: '0.3s' }}
-        >
-          <nav className="flex flex-col divide-y divide-border border-y border-border">
+        <div className="fixed inset-0 z-40 animate-fade-in overflow-y-auto bg-background px-5 pb-10 pt-24 lg:hidden">
+          <nav className="flex flex-col gap-1">
             {NAV.map((n) => (
-              <button key={n.id} onClick={() => go(n.id)} className="py-3.5 text-left font-display text-xl text-foreground">
+              <button
+                key={n.id}
+                onClick={() => go(n.id)}
+                className="rounded-xl px-4 py-3.5 text-left font-display text-lg text-foreground hover:bg-secondary"
+              >
                 {n.label}
               </button>
             ))}
           </nav>
+
+          <div className="mt-6 grid grid-cols-4 gap-2">
+            {[
+              { icon: 'Library', label: 'Нормы', fn: () => setLib(true) },
+              { icon: 'Archive', label: 'Архив', fn: () => setArchive(true) },
+              { icon: 'Bot', label: 'ИИ', fn: () => setAgent(true) },
+              { icon: 'Info', label: 'Инфо', fn: () => setInfo(true) },
+            ].map((b) => (
+              <button
+                key={b.label}
+                onClick={() => {
+                  setOpen(false);
+                  b.fn();
+                }}
+                className="flex flex-col items-center gap-1.5 rounded-xl border border-border py-4 text-[0.72rem] text-muted-foreground"
+              >
+                <Icon name={b.icon} size={19} className="text-primary" />
+                {b.label}
+              </button>
+            ))}
+          </div>
+
           <button
-            onClick={() => go('premium')}
-            className="mt-8 w-full border border-primary px-8 py-4 text-[0.82rem] font-medium uppercase tracking-[0.12em] text-primary"
+            onClick={() => {
+              setOpen(false);
+              if (user) openAccount();
+              else openAuth('register');
+            }}
+            className="mt-5 w-full rounded-full bg-primary px-8 py-4 text-[0.88rem] font-medium text-primary-foreground"
           >
-            Премиум
+            {user ? 'Личный кабинет' : 'Начать работу'}
+          </button>
+          <button
+            onClick={() => {
+              setOpen(false);
+              setQr(true);
+            }}
+            className="mt-3 w-full rounded-full border border-border px-8 py-4 text-[0.88rem] text-foreground"
+          >
+            Поделиться сайтом
           </button>
         </div>
       )}

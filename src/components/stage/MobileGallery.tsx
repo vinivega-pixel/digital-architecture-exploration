@@ -31,16 +31,15 @@ const MobileGallery = () => {
   const active = TAB_ROWS.find((r) => r.id === tab);
 
   if (active) {
-    const fg = palette.leftFg;
     return (
-      <div className="fixed inset-0 z-[95] flex flex-col md:hidden" style={{ background: palette.leftBg, color: fg }}>
-        <div className="flex items-center gap-3 border-b px-4 py-3.5" style={{ borderColor: `${fg}26` }}>
-          <button type="button" onClick={() => setTab(null)} aria-label="Назад" className="-ml-1.5 p-1.5" style={{ color: fg }}>
+      <div className="fixed inset-0 z-[95] flex flex-col bg-background text-foreground md:hidden">
+        <div className="flex items-center gap-3 border-b border-border px-4 py-3.5">
+          <button type="button" onClick={() => setTab(null)} aria-label="Назад" className="-ml-1.5 p-1.5 text-foreground">
             <Icon name="ArrowLeft" size={20} />
           </button>
           <div className="min-w-0 flex-1">
             <p className="truncate font-display text-[1rem] leading-tight">{active.label}</p>
-            <p className="truncate text-[0.68rem] uppercase tracking-[0.12em]" style={{ color: `${fg}88` }}>
+            <p className="truncate text-[0.68rem] uppercase tracking-[0.12em] text-muted-foreground">
               Этап {stage.num} · {stage.phase}
             </p>
           </div>
@@ -53,9 +52,9 @@ const MobileGallery = () => {
   }
 
   return (
-    <section id="stages-mobile" className="md:hidden" style={{ background: palette.rightBg }}>
+    <section id="stages-mobile" className="bg-background px-4 pt-8 md:hidden">
       <div
-        className="relative h-[56vh] min-h-[330px] w-full overflow-hidden"
+        className="relative h-[52vh] min-h-[310px] w-full overflow-hidden rounded-3xl"
         onTouchStart={(e) => {
           const t = e.touches[0];
           touch.current = { x: t.clientX, y: t.clientY };
@@ -84,45 +83,36 @@ const MobileGallery = () => {
         <div
           className="absolute inset-0"
           style={{
-            background: `linear-gradient(180deg, ${palette.rightBg}5c 0%, ${palette.rightBg}1a 42%, ${palette.rightBg}f2 100%)`,
+            background:
+              'linear-gradient(180deg, rgba(8,17,28,.5) 0%, rgba(8,17,28,.22) 42%, rgba(8,17,28,.9) 100%)',
           }}
         />
 
         <div className="absolute inset-0 flex flex-col items-center justify-center px-7 text-center">
-          <p className="text-[0.6rem] uppercase tracking-[0.24em]" style={{ color: `${palette.rightFg}cc` }}>
+          <span className="rounded-full border border-white/25 px-3 py-1 text-[0.6rem] uppercase tracking-[0.16em] text-white/75">
             Этап {stage.num}
-          </p>
-          <h2
-            className="mt-2 font-display text-[1.4rem] uppercase leading-[1.15] tracking-[0.02em]"
-            style={{ color: palette.rightFg }}
-          >
+          </span>
+          <h2 className="mt-3 font-display text-[1.35rem] leading-[1.18] text-white">
             {stageLabels[stage.id] ?? stage.kicker}
           </h2>
         </div>
 
-        <p
-          className="absolute inset-x-5 bottom-4 text-center text-[0.7rem] leading-[1.6]"
-          style={{ color: `${palette.rightFg}bb` }}
-        >
+        <p className="absolute inset-x-5 bottom-4 text-center text-[0.7rem] leading-[1.6] text-white/70">
           {stageLeads[stage.id] ?? stage.lead}
         </p>
       </div>
 
-      <div className="flex items-center gap-2.5 px-4 py-3" style={{ background: palette.rightBg }}>
+      <div className="flex items-center gap-2.5 py-4">
         <button
           type="button"
           onClick={() => shift(-1)}
           aria-label="Предыдущий этап"
-          className="shrink-0 p-1.5"
-          style={{ color: palette.rightFg }}
+          className="shrink-0 p-1.5 text-muted-foreground"
         >
           <Icon name="ChevronLeft" size={19} />
         </button>
 
-        <div
-          className="flex flex-1 items-center gap-[3px] rounded-full px-2 py-2"
-          style={{ background: `${palette.rightFg}12` }}
-        >
+        <div className="flex flex-1 items-center gap-[3px] rounded-full bg-secondary px-2 py-2">
           {stages.map((s, i) => (
             <button
               key={s.id}
@@ -131,7 +121,7 @@ const MobileGallery = () => {
               aria-label={`Этап ${s.num}`}
               className="h-[4px] flex-1 rounded-full transition-all duration-300"
               style={{
-                background: i === idx ? palette.rightFg : `${palette.rightFg}40`,
+                background: i === idx ? 'hsl(var(--primary))' : 'hsl(var(--border))',
                 transform: i === idx ? 'scaleY(2)' : 'none',
               }}
             />
@@ -142,8 +132,7 @@ const MobileGallery = () => {
           type="button"
           onClick={() => shift(1)}
           aria-label="Следующий этап"
-          className="shrink-0 p-1.5"
-          style={{ color: palette.rightFg }}
+          className="shrink-0 p-1.5 text-muted-foreground"
         >
           <Icon name="ChevronRight" size={19} />
         </button>

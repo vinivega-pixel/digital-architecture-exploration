@@ -7,7 +7,7 @@ const NORM_URL = (func2url as Record<string, string>)['norm-check'];
 
 /** Быстрый поиск норматива по вопросу — внутри вкладки «База знаний». */
 const NormSearch = ({ stage }: { stage: Stage }) => {
-  const fg = stage.palette.leftFg;
+  const fg = 'hsl(var(--foreground))';
   const [q, setQ] = useState('');
   const [answer, setAnswer] = useState('');
   const [busy, setBusy] = useState(false);
@@ -32,7 +32,7 @@ const NormSearch = ({ stage }: { stage: Stage }) => {
   };
 
   return (
-    <div className="mb-5 border px-4 py-4" style={{ borderColor: `${fg}30` }}>
+    <div className="mb-5 border px-4 py-4" style={{ borderColor: 'hsl(var(--border))' }}>
       <p className="flex items-center gap-2 text-[0.8rem] font-medium" style={{ color: fg }}>
         <Icon name="Sparkles" size={15} />
         Быстрый поиск норматива
@@ -44,7 +44,7 @@ const NormSearch = ({ stage }: { stage: Stage }) => {
           onKeyDown={(e) => e.key === 'Enter' && ask()}
           placeholder="Например: уклон плоской кровли"
           className="min-w-0 flex-1 border bg-transparent px-3 py-2.5 text-[0.84rem] outline-none"
-          style={{ borderColor: `${fg}30`, color: fg }}
+          style={{ borderColor: 'hsl(var(--border))', color: fg }}
         />
         <button
           type="button"
@@ -52,13 +52,13 @@ const NormSearch = ({ stage }: { stage: Stage }) => {
           disabled={busy}
           aria-label="Найти"
           className="shrink-0 px-4 disabled:opacity-40"
-          style={{ background: fg, color: stage.palette.leftBg, minHeight: 44 }}
+          style={{ background: fg, color: 'hsl(var(--background))', minHeight: 44 }}
         >
           {busy ? <Icon name="Loader" size={15} className="animate-spin" /> : <Icon name="Search" size={15} />}
         </button>
       </div>
       {answer ? (
-        <p className="mt-3 whitespace-pre-line text-[0.82rem] leading-relaxed" style={{ color: `${fg}c8` }}>
+        <p className="mt-3 whitespace-pre-line text-[0.82rem] leading-relaxed" style={{ color: 'hsl(var(--muted-foreground))' }}>
           {answer}
         </p>
       ) : null}
