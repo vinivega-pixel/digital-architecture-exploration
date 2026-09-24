@@ -14,6 +14,8 @@ type Props = {
 /** Оформление продукта: подробности → согласие → подтверждение → оплата или заявка. */
 const ProductFlow = ({ product, onClose, onPay, onRequest, busy }: Props) => {
   const [agree, setAgree] = useState(false);
+  const [sum, setSum] = useState('');
+  const [free, setFree] = useState(false);
   const [confirm, setConfirm] = useState(false);
   const [text, setText] = useState('');
   const [contact, setContact] = useState('');
@@ -114,6 +116,71 @@ const ProductFlow = ({ product, onClose, onPay, onRequest, busy }: Props) => {
               </div>
             ) : null}
 
+            {product.donate ? (
+              <div className="mt-6 space-y-3">
+                <label className="block">
+                  <span className="block text-[0.72rem] uppercase tracking-[0.14em] text-muted-foreground">
+                    Сумма взноса, ₽
+                  </span>
+                  <input
+                    value={sum}
+                    onChange={(e) => setSum(e.target.value.replace(/[^0-9]/g, ''))}
+                    inputMode="numeric"
+                    placeholder="Введите любую сумму"
+                    className="mt-1.5 w-full rounded-xl border border-border bg-background px-4 py-3 text-[0.95rem] text-foreground outline-none focus:border-primary"
+                  />
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {['500', '1000', '3000', '5000'].map((v) => (
+                    <button
+                      key={v}
+                      onClick={() => setSum(v)}
+                      className="rounded-full border border-border px-4 py-2 text-[0.82rem] text-foreground transition-colors hover:border-primary"
+                    >
+                      {v} ₽
+                    </button>
+                  ))}
+                </div>
+                <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-emerald-500/40 bg-emerald-500/5 px-4 py-3.5">
+                  <input
+                    type="checkbox"
+                    checked={free}
+                    onChange={(e) => setFree(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 shrink-0 accent-emerald-600"
+                  />
+                  <span className="text-[0.84rem] leading-relaxed text-foreground/85">
+                    Подтверждаю, что вношу средства безвозмездно: это добровольный вклад в развитие платформы и помощь
+                    строителям, он не является оплатой товара или услуги и возврату не подлежит
+                  </span>
+                </label>
+              </div>
+            ) : null}
+
+            {product.swarm ? (
+              <div className="mt-6 rounded-xl border border-border bg-muted/40 px-4 py-3.5">
+                <p className="flex items-center gap-2 text-[0.86rem] font-medium text-foreground">
+                  <Icon name="Wallet" size={16} className="text-primary" />
+                  Кошелёк с токенами
+                </p>
+                <p className="mt-1.5 text-[0.82rem] leading-relaxed text-muted-foreground">
+                  Фиксированной стоимости нет: агенты работают по мере задач. Для запуска пополните кошелёк — расход
+                  токенов виден по каждой задаче, остаток не сгорает.
+                </p>
+                <label className="mt-3 block">
+                  <span className="block text-[0.72rem] uppercase tracking-[0.14em] text-muted-foreground">
+                    Сумма пополнения, ₽
+                  </span>
+                  <input
+                    value={sum}
+                    onChange={(e) => setSum(e.target.value.replace(/[^0-9]/g, ''))}
+                    inputMode="numeric"
+                    placeholder="например, 5000"
+                    className="mt-1.5 w-full rounded-xl border border-border bg-background px-4 py-3 text-[0.95rem] text-foreground outline-none focus:border-primary"
+                  />
+                </label>
+              </div>
+            ) : null}
+
             <label className="mt-6 flex cursor-pointer items-start gap-3 rounded-xl border border-border px-4 py-3.5">
               <input
                 type="checkbox"
@@ -129,11 +196,22 @@ const ProductFlow = ({ product, onClose, onPay, onRequest, busy }: Props) => {
             <div className="mt-6 flex flex-wrap gap-3">
               <button
                 onClick={() => (isRequest ? onRequest(product, text, contact) : setConfirm(true))}
-                disabled={!agree || (isRequest && !text.trim())}
+                disabled={
+                  !agree ||
+                  (isRequest && !text.trim()) ||
+                  (product.donate && (!free || Number(sum) <= 0)) ||
+                  (product.swarm && Number(sum) <= 0)
+                }
                 className="flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-[0.86rem] font-medium text-primary-foreground disabled:opacity-40"
               >
-                <Icon name={isRequest ? 'Send' : 'CreditCard'} size={16} />
-                {isRequest ? 'Отправить заявку' : 'Оформить'}
+                <Icon name={isRequest ? 'Send' : product.donate ? 'Heart' : product.swarm ? 'Wallet' : 'CreditCard'} size={16} />
+                {isRequest
+                  ? 'Отправить заявку'
+                  : product.donate
+                    ? `Внести${Number(sum) > 0 ? ` ${Number(sum).toLocaleString('ru-RU')} ₽` : ''}`
+                    : product.swarm
+                      ? `Пополнить кошелёк${Number(sum) > 0 ? ` на ${Number(sum).toLocaleString('ru-RU')} ₽` : ''}`
+                      : 'Оформить'}
               </button>
               <button onClick={onClose} className="rounded-full border border-border px-8 py-4 text-[0.86rem] text-foreground">
                 Вернуться к выбору

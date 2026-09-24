@@ -110,7 +110,12 @@ const Premium = () => {
                         </span>
                       )}
                     </span>
-                    <span className="mt-4 block font-display text-[1.75rem] leading-none text-foreground">{p.price}</span>
+                    {p.audience?.length ? (
+                      <span className="mt-1.5 block text-[0.66rem] leading-snug text-emerald-600 dark:text-emerald-400">
+                        {p.audience.join(' · ')}
+                      </span>
+                    ) : null}
+                    <span className="mt-3 block font-display text-[1.75rem] leading-none text-foreground">{p.price}</span>
                     <span className="mt-2 block text-[0.76rem] text-muted-foreground">{p.period}</span>
                     <span className="mt-4 block border-t border-border pt-4 text-[0.82rem] leading-relaxed text-muted-foreground">
                       {p.lead}

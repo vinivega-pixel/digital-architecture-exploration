@@ -32,10 +32,7 @@ const StagesBoard = () => {
     const onOpen = (e: Event) => {
       const id = (e as CustomEvent<string>).detail;
       const n = stages.findIndex((s) => s.id === id);
-      if (n >= 0) {
-        setIdx(n);
-        setTab(null);
-      }
+      if (n >= 0) setIdx(n);
     };
     window.addEventListener('open-stage', onOpen);
     return () => window.removeEventListener('open-stage', onOpen);
@@ -47,7 +44,7 @@ const StagesBoard = () => {
   const openTab = (t: MobileTab) => {
     const next = tab === t ? null : t;
     setTab(next);
-    if (next) {
+    if (next && !tab) {
       requestAnimationFrame(() =>
         setTimeout(() => {
           const panel = document.getElementById('stage-panel');
@@ -59,10 +56,7 @@ const StagesBoard = () => {
     }
   };
 
-  const shift = (step: number) => {
-    setIdx((i) => (i + step + stages.length) % stages.length);
-    setTab(null);
-  };
+  const shift = (step: number) => setIdx((i) => (i + step + stages.length) % stages.length);
 
   return (
     <section id="stages" className="hidden scroll-mt-[68px] bg-background pt-7 md:block">
@@ -121,19 +115,24 @@ const StagesBoard = () => {
               return (
                 <div key={s.id} className="flex flex-1 items-start">
                   <button
-                    onClick={() => {
-                      setIdx(i);
-                      setTab(null);
-                    }}
-                    className="group flex-1 rounded-xl px-1 py-1.5 text-center transition-colors"
-                    style={on ? { background: 'hsl(var(--primary) / 0.07)' } : undefined}
+                    onClick={() => setIdx(i)}
+                    className="group flex-1 rounded-xl border-2 px-1 py-1.5 text-center transition-all"
+                    style={
+                      on
+                        ? {
+                            background: 'hsl(var(--primary) / 0.09)',
+                            borderColor: 'hsl(var(--primary))',
+                            boxShadow: '0 6px 18px -8px hsl(var(--primary) / 0.6)',
+                          }
+                        : { borderColor: 'transparent' }
+                    }
                   >
                     <span className="flex h-[54px] items-center justify-center">
                       <img
                         src={`/iso/${STAGE_ICON[s.id]}.png`}
                         alt=""
                         className="h-[48px] object-contain transition-transform duration-300 group-hover:-translate-y-1"
-                        style={{ opacity: on ? 1 : 0.5 }}
+                        style={{ opacity: on ? 1 : 0.45, filter: on ? 'saturate(1.15) contrast(1.08)' : 'grayscale(.35)' }}
                       />
                     </span>
                     <span className="mt-1.5 block text-[0.72rem] tabular-nums text-muted-foreground">{s.num}</span>

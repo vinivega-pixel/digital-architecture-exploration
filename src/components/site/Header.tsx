@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import Icon from '@/components/ui/icon';
+import BrandMark from '@/components/ui/Logo';
 import { useAuth } from '@/context/AuthContext';
 import { useUi } from '@/context/UiContext';
 import ShareQr from './ShareQr';
@@ -23,12 +24,7 @@ export const scrollTo = (id: string) =>
 
 const Logo = ({ light }: { light?: boolean }) => (
   <span className="flex items-center gap-2.5">
-    <span
-      className="flex h-9 w-9 items-center justify-center rounded-[10px]"
-      style={{ background: light ? '#ffffff' : 'hsl(var(--primary))' }}
-    >
-      <Icon name="Hexagon" size={19} style={{ color: light ? '#0f1d2e' : '#ffffff' }} />
-    </span>
+    <BrandMark size={36} tone={light ? 'light' : 'brand'} />
     <span
       className="font-display text-[1.28rem] tracking-[0.04em]"
       style={{ color: light ? '#ffffff' : 'hsl(var(--foreground))' }}

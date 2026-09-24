@@ -19,12 +19,16 @@ import { more7 } from './more7';
 import { more8 } from './more8';
 import { more9 } from './more9';
 import { more10 } from './more10';
+import { ext1 } from './ext1';
+import { ext2 } from './ext2';
+import { ext3 } from './ext3';
+import { ext4 } from './ext4';
 
 export const formulaCalcs: Record<string, Calc[]> = {
-  uchastok: [...stage1, ...more1],
-  izyskaniya: [...stage2, ...more2],
-  pd: [...stage3, ...more3],
-  arkr: [...stage4, ...more4],
+  uchastok: [...stage1, ...more1, ...ext1],
+  izyskaniya: [...stage2, ...more2, ...ext2],
+  pd: [...stage3, ...more3, ...ext3],
+  arkr: [...stage4, ...more4, ...ext4],
   eom: [...stage5, ...more5],
   vk: [...stage6, ...more6],
   ovik: [...stage7, ...more7],

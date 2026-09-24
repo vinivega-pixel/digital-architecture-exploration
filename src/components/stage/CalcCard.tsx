@@ -12,21 +12,33 @@ const CalcCard = ({ calc, palette, stageTitle }: Props) => {
   const [vals, setVals] = useState<Record<string, number>>(() =>
     Object.fromEntries(calc.fields.map((f) => [f.key, f.def])),
   );
-  const results = useMemo(() => calc.compute(vals), [calc, vals]);
+  const [shown, setShown] = useState<Record<string, number>>(() =>
+    Object.fromEntries(calc.fields.map((f) => [f.key, f.def])),
+  );
+  const [fresh, setFresh] = useState(true);
+  const results = useMemo(() => calc.compute(shown), [calc, shown]);
   const subst = useMemo(
-    () => verifiedSubstitution(calc.formula, calc.fields, vals, results),
-    [calc, vals, results],
+    () => verifiedSubstitution(calc.formula, calc.fields, shown, results),
+    [calc, shown, results],
   );
   const fg = palette.leftFg;
 
   const set = (key: string, raw: string) => {
     const n = Number(raw.replace(',', '.'));
     setVals((prev) => ({ ...prev, [key]: Number.isFinite(n) ? n : 0 }));
+    setFresh(false);
   };
+
+  const run = () => {
+    setShown(vals);
+    setFresh(true);
+  };
+
+  const main = results.find((r) => r.accent) ?? results[0];
 
   const download = () => {
     trackDownload('calc', calc.title, stageTitle);
-    return downloadCalcDoc({ calc, values: vals, results, stageTitle });
+    return downloadCalcDoc({ calc, values: shown, results, stageTitle });
   };
 
   return (
@@ -95,7 +107,37 @@ const CalcCard = ({ calc, palette, stageTitle }: Props) => {
         ))}
       </div>
 
-      <dl className="mt-5 divide-y" style={{ borderColor: `${fg}22` }}>
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <button
+          onClick={run}
+          className="inline-flex items-center gap-2 px-5 py-3 text-[0.74rem] font-medium uppercase tracking-[0.12em] transition-opacity hover:opacity-90"
+          style={{ background: fg, color: palette.leftBg }}
+        >
+          <Icon name="Calculator" size={15} />
+          Рассчитать
+        </button>
+        {!fresh ? (
+          <span className="text-[0.72rem]" style={{ color: `${fg}90` }}>
+            Данные изменились — нажмите «Рассчитать»
+          </span>
+        ) : null}
+      </div>
+
+      {main ? (
+        <div
+          className="mt-4 flex flex-wrap items-baseline justify-between gap-3 border px-4 py-3.5"
+          style={{ borderColor: `${fg}55`, background: `${fg}12`, opacity: fresh ? 1 : 0.45 }}
+        >
+          <span className="text-[0.7rem] uppercase tracking-[0.14em]" style={{ color: `${fg}a0` }}>
+            Итого · {main.label}
+          </span>
+          <span className="font-display text-[1.6rem] leading-none" style={{ color: fg }}>
+            {main.value}
+          </span>
+        </div>
+      ) : null}
+
+      <dl className="mt-4 divide-y" style={{ borderColor: `${fg}22`, opacity: fresh ? 1 : 0.45 }}>
         {results.map((r) => (
           <div
             key={r.label}
@@ -114,7 +156,7 @@ const CalcCard = ({ calc, palette, stageTitle }: Props) => {
 
       <button
         onClick={download}
-        className="mt-5 inline-flex items-center gap-2 border px-5 py-3 text-[0.74rem] font-medium uppercase tracking-[0.12em] transition-colors"
+        className="mt-4 inline-flex items-center gap-2 border px-5 py-3 text-[0.74rem] font-medium uppercase tracking-[0.12em] transition-colors"
         style={{ borderColor: fg, color: fg }}
         onMouseEnter={(e) => {
           e.currentTarget.style.background = fg;

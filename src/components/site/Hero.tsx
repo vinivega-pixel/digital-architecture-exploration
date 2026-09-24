@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import Icon from '@/components/ui/icon';
+import BrandMark from '@/components/ui/Logo';
 import { useUi } from '@/context/UiContext';
 import { scrollTo } from './Header';
 
@@ -89,7 +90,7 @@ const Hero = () => {
             <div className="flex gap-3">
               <div className="w-[32%] shrink-0">
                 <p className="mb-2 flex items-center gap-1.5 px-1 text-[0.62rem] font-medium text-white/80">
-                  <Icon name="Hexagon" size={11} />
+                  <BrandMark size={13} tone="brand" />
                   ЦИФРА
                 </p>
                 {PANEL_ROWS.map((r, i) => (

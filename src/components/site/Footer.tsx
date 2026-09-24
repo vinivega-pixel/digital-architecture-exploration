@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Icon from '@/components/ui/icon';
+import BrandMark from '@/components/ui/Logo';
 import { projectCloud } from '@/data/projectCloud';
 import { useUi } from '@/context/UiContext';
 import { scrollTo } from './Header';
@@ -76,9 +77,7 @@ const Footer = () => {
         <div className="mt-16 grid gap-10 border-t border-white/10 pt-12 lg:grid-cols-[minmax(0,1.3fr)_repeat(3,minmax(0,0.8fr))_minmax(0,1.2fr)]">
           <div>
             <span className="flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-white">
-                <Icon name="Hexagon" size={19} className="text-[#0f1d2e]" />
-              </span>
+              <BrandMark size={36} tone="light" />
               <span className="font-display text-[1.28rem] tracking-[0.04em]">ЦИФРА</span>
             </span>
             <p className="mt-4 max-w-[22em] text-[0.82rem] leading-[1.7] text-white/45">

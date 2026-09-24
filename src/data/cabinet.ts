@@ -37,13 +37,15 @@ export type Project = {
   budget: number;
   issues: number;
   sheet: { code: string; name: string; scale: string; author: string; plan: 'flat' | 'school' | 'house' };
+  board: string;
+  files: { name: string; kind: string; size: string }[];
   sections: Section[];
   tasks: Task[];
   payments: Payment[];
   money: Money[];
   calendar: { month: string; days: number; first: number; today: number; meeting: Meeting };
   report: StageReport;
-  chat: { who: 'Заказчик' | 'Инженер' | 'ИИ'; text: string; time: string }[];
+  chat: { who: string; role: 'crm' | 'ai' | 'eng' | 'doc' | 'buh'; text: string; time: string; file?: string }[];
   hint: { text: string; source: string; save: string };
   events: { icon: string; text: string; tone: string }[];
 };
@@ -65,6 +67,12 @@ export const projects: Project[] = [
     budget: 78,
     issues: 3,
     sheet: { code: 'АР-12', name: 'План типового этажа', scale: '1:100', author: 'Ковалёв А. С.', plan: 'flat' },
+    board: 'https://cdn.poehali.dev/projects/973263ae-4d11-4e93-b52f-fdb346792765/bucket/aff4e159-1fe8-4fe0-a3a7-6bdbcd3f6e17.jpg',
+    files: [
+      { name: 'АР-12 План типового этажа.pdf', kind: 'PDF', size: '4.2 МБ' },
+      { name: 'ЭОМ-11 План силовой сети.dwg', kind: 'DWG', size: '1.8 МБ' },
+      { name: 'Акт скрытых работ №61.docx', kind: 'DOCX', size: '0.3 МБ' },
+    ],
     sections: [
       {
         id: 'crm',
@@ -170,9 +178,11 @@ export const projects: Project[] = [
       termNote: 'план 45 дней · с опережением на 3 дня',
     },
     chat: [
-      { who: 'Заказчик', text: 'Когда закроем подсветку фасада? Сроки поджимают.', time: '09:14' },
-      { who: 'ИИ', text: 'До конца срока 8 дней. По акту №61 объём полосы заземления на 8 % больше проектного — сверьте с ЭОМ-11.', time: '09:15' },
-      { who: 'Инженер', text: 'Расхождение из-за обхода фундамента по факту — согласовано, готовлю дополнение к акту. Подсветку сдадим 17.10.', time: '09:22' },
+      { who: 'CRM-система', role: 'crm', text: 'Заявка №45 переведена в статус «Поставка». Ответственный — Савельев А. И.', time: '09:02' },
+      { who: 'ИИ-ассистент', role: 'ai', text: 'В акте №61 объём полосы заземления на 8 % больше проектного. Сверьте с листом ЭОМ-11.', time: '09:15' },
+      { who: 'Инженер Дмитрий', role: 'eng', text: 'Расхождение из-за обхода фундамента по факту. Согласовано, готовлю дополнение к акту.', time: '09:22' },
+      { who: 'Екатерина, делопроизводитель', role: 'doc', text: 'Направляю комплект на подписание. Требуется подписать электронной подписью до конца дня.', time: '10:04', file: 'Комплект КС-2 №14.pdf · 3.1 МБ' },
+      { who: 'Светлана, бухгалтер', role: 'buh', text: 'Акты КС-2 и КС-3 за апрель по ЖК «Южный» направлены Юдину Р. В. Он подтвердил получение.', time: '10:31' },
     ],
     hint: {
       text: 'Полоса заземления 40×4 мм найдена дешевле, чем в смете',
@@ -195,6 +205,12 @@ export const projects: Project[] = [
     budget: 91,
     issues: 1,
     sheet: { code: 'АР-04', name: 'План первого этажа', scale: '1:50', author: 'Лебедева И. К.', plan: 'house' },
+    board: 'https://cdn.poehali.dev/projects/973263ae-4d11-4e93-b52f-fdb346792765/bucket/aeae3fbd-b1cf-444c-8035-69b8f84afd51.jpg',
+    files: [
+      { name: 'АР-04 План первого этажа.pdf', kind: 'PDF', size: '2.6 МБ' },
+      { name: 'Узлы фальцевой кровли.dwg', kind: 'DWG', size: '1.1 МБ' },
+      { name: 'Доп. соглашение №2.docx', kind: 'DOCX', size: '0.2 МБ' },
+    ],
     sections: [
       {
         id: 'crm',
@@ -300,9 +316,11 @@ export const projects: Project[] = [
       termNote: 'план 24 дня · отставание 2 дня',
     },
     chat: [
-      { who: 'Заказчик', text: 'Жена просит тёмный графит вместо серого. Успеем?', time: '18:40' },
-      { who: 'ИИ', text: 'Графит есть у поставщика, срок поставки 4 дня. Сдвиг по кровле — 2 дня, в общий срок укладываемся.', time: '18:41' },
-      { who: 'Инженер', text: 'Подтверждаю. Переоформляю заявку, доплата 46 тысяч за цвет. Сегодня пришлю на согласование.', time: '18:52' },
+      { who: 'CRM-система', role: 'crm', text: 'Заявка на фальц переведена в «Ожидает подтверждения цвета».', time: '18:20' },
+      { who: 'ИИ-ассистент', role: 'ai', text: 'Графит есть у поставщика, поставка 4 дня. Сдвиг по кровле 2 дня, в общий срок укладываемся.', time: '18:41' },
+      { who: 'Инженер Дмитрий', role: 'eng', text: 'Переоформляю заявку. Доплата за цвет 46 тысяч, сегодня пришлю на согласование.', time: '18:52' },
+      { who: 'Екатерина, делопроизводитель', role: 'doc', text: 'Подготовила дополнение к договору по цвету кровли. Нужна электронная подпись заказчика.', time: '19:05', file: 'Доп. соглашение №3.pdf · 0.9 МБ' },
+      { who: 'Светлана, бухгалтер', role: 'buh', text: 'Счёт №109 на террасную доску выставлен, оплата запланирована на 12 октября.', time: '19:18' },
     ],
     hint: {
       text: 'Террасная доска лиственница найдена дешевле сметной цены',
@@ -325,6 +343,12 @@ export const projects: Project[] = [
     budget: 41,
     issues: 5,
     sheet: { code: 'АР-07', name: 'План блока начальных классов', scale: '1:200', author: 'Гаврилов Е. Н.', plan: 'school' },
+    board: 'https://cdn.poehali.dev/projects/973263ae-4d11-4e93-b52f-fdb346792765/bucket/64cb710c-a80b-4b77-978e-ca675a38a865.jpg',
+    files: [
+      { name: 'АР-07 Планировки блоков.pdf', kind: 'PDF', size: '8.4 МБ' },
+      { name: 'Отчёт по инженерным изысканиям.pdf', kind: 'PDF', size: '12.1 МБ' },
+      { name: 'Замечания экспертизы.docx', kind: 'DOCX', size: '0.5 МБ' },
+    ],
     sections: [
       {
         id: 'crm',
@@ -430,9 +454,11 @@ export const projects: Project[] = [
       termNote: 'план 35 дней · отставание 3 дня',
     },
     chat: [
-      { who: 'Заказчик', text: 'Роспотребнадзор дал пять замечаний по инсоляции. Что с планировками?', time: '11:02' },
-      { who: 'ИИ', text: 'Три класса в северном блоке не добирают 2 часа по СанПиН 1.2.3685-21. Разворот блока на 12° решает вопрос.', time: '11:03' },
-      { who: 'Инженер', text: 'Смотрим два варианта: разворот блока либо перенос трёх классов в южное крыло. К 15.10 дадим решение.', time: '11:20' },
+      { who: 'CRM-система', role: 'crm', text: 'Получены замечания экспертизы: 5 пунктов по инсоляции. Срок ответа — 15 октября.', time: '10:40' },
+      { who: 'ИИ-ассистент', role: 'ai', text: 'Три класса северного блока не добирают 2 часа по СанПиН 1.2.3685-21. Разворот блока на 12° закрывает вопрос.', time: '11:03' },
+      { who: 'Инженер Дмитрий', role: 'eng', text: 'Считаем два варианта: разворот блока либо перенос классов в южное крыло. Решение к 15.10.', time: '11:20' },
+      { who: 'Екатерина, делопроизводитель', role: 'doc', text: 'Направляю соглашение о продлении срока ПД. Подпишите электронной подписью до заседания.', time: '11:48', file: 'Соглашение о продлении.pdf · 1.4 МБ' },
+      { who: 'Светлана, бухгалтер', role: 'buh', text: 'Счёт за экспертизу на 1.12 млн поставлен в оплату до 20 октября, гарантия действует.', time: '12:02' },
     ],
     hint: {
       text: 'Светопрозрачные конструкции класса А найдены дешевле сметы',
@@ -445,6 +471,38 @@ export const projects: Project[] = [
       { icon: 'FileWarning', text: 'Техусловия на наружные сети не получены — риск сдвига срока ПД', tone: '#f2a65a' },
     ],
   },
+];
+
+export type ArchiveItem = { name: string; kind: string; year: string };
+
+/** Завершённые проекты в архиве кабинета. */
+export const archive: ArchiveItem[] = [
+  { name: 'Завод металлоконструкций', kind: 'Производство', year: '2024' },
+  { name: 'ТРЦ «Меридиан»', kind: 'Торговля', year: '2024' },
+  { name: 'Частный дом, Лесные дали', kind: 'ИЖС', year: '2023' },
+  { name: 'Пожарная часть на 4 выезда', kind: 'Госзаказ', year: '2023' },
+  { name: 'ЖК «Речной», 3 очередь', kind: 'Жильё', year: '2022' },
+  { name: 'Склад класса А, 12 тыс. м²', kind: 'Логистика', year: '2022' },
+  { name: 'Детский сад на 220 мест', kind: 'Госзаказ', year: '2021' },
+];
+
+export type ToolItem = { icon: string; label: string; badge?: number; tone?: 'urgent' };
+
+/** Рабочие инструменты кабинета — общие для всех проектов. */
+export const tools: ToolItem[] = [
+  { icon: 'Users', label: 'CRM — одна на все проекты', badge: 12 },
+  { icon: 'FileSearch', label: 'Проверить документ' },
+  { icon: 'Repeat', label: 'Конвертировать' },
+  { icon: 'GitCompare', label: 'Сравнить' },
+  { icon: 'PenLine', label: 'Изменить' },
+  { icon: 'RefreshCw', label: 'Повторная аналитика', badge: 2 },
+  { icon: 'Signature', label: 'На подпись', badge: 4 },
+  { icon: 'Mail', label: 'Почта', badge: 7 },
+  { icon: 'Inbox', label: 'Входящие уведомления', badge: 9 },
+  { icon: 'Send', label: 'Исходящие уведомления' },
+  { icon: 'ListChecks', label: 'Лист расхождений', badge: 3 },
+  { icon: 'TrendingUp', label: 'Прогнозируемый бюджет' },
+  { icon: 'TriangleAlert', label: 'СРОЧНО — ВАЖНО', badge: 2, tone: 'urgent' },
 ];
 
 export default projects;

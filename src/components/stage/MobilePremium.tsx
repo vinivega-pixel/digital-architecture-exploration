@@ -96,6 +96,9 @@ const MobilePremium = ({ stage, tab }: { stage: Stage; tab: MobileTab }) => {
             <Icon name={p.icon} size={16} className="mt-0.5 shrink-0" style={{ color: `${fg}90` }} />
             <div>
               <p className="text-[0.88rem] font-semibold">{p.name}</p>
+              {p.audience?.length ? (
+                <p className="text-[0.68rem] text-emerald-600 dark:text-emerald-400">{p.audience.join(' · ')}</p>
+              ) : null}
               <p className="mt-0.5 text-[0.8rem] leading-relaxed" style={{ color: `${fg}b0` }}>
                 {p.text}
               </p>
