@@ -8,6 +8,34 @@ import { products, type Product } from '@/data/products';
 
 const MAIL = 'cifrainst@mail.ru';
 
+const CONTOUR = [
+  {
+    title: 'Бесплатно',
+    icon: 'Compass',
+    fg: '#34d399',
+    bg: 'rgba(52,211,153,.14)',
+    note: 'Всё, что нужно, чтобы посчитать, свериться с нормой и оформить документ. Без регистрации и оплаты.',
+    items: ['Расчёты', 'Нормы', 'Документы', 'База знаний'],
+  },
+  {
+    title: 'В рабочем пространстве',
+    icon: 'LayoutGrid',
+    fg: '#2f6df6',
+    bg: 'rgba(47,109,246,.14)',
+    accent: true,
+    note: 'Проект живёт целиком: документы, сроки, деньги и решения собраны в одном контуре, команда работает рядом.',
+    items: ['Проект', 'Документы объекта', 'РОЙ', 'Аналитика', 'Командная работа', 'Контроль', 'История решений'],
+  },
+  {
+    title: 'С профессиональной поддержкой',
+    icon: 'HardHat',
+    fg: '#f2a65a',
+    bg: 'rgba(242,166,90,.14)',
+    note: 'Там, где нужен живой инженер: изыскания, проектирование и защита решений перед экспертизой.',
+    items: ['Изыскания', 'Проектирование', 'Экспертиза', 'Авторский надзор', 'Аудит'],
+  },
+];
+
 const Premium = () => {
   const { user, premium, startPayment } = useAuth();
   const { openAuth, openAccount } = useUi();
@@ -60,17 +88,45 @@ const Premium = () => {
           <div className="mx-auto max-w-[52em] text-center">
             <p className="rubric">Цифровой кабинет строителя</p>
             <h2 className="mt-4 font-display text-[1.9rem] leading-[1.15] text-foreground md:text-[2.7rem]">
-              Бесплатной части хватает для работы. Что тогда в кабинете?
+              Соберите свой цифровой контур проекта
             </h2>
             <p className="mt-6 text-[0.95rem] leading-[1.8] text-muted-foreground">
-              Инструмент, который экономит время и деньги на стройке. Цифровая платформа института — это база знаний и
-              вторая память объекта, инженер, контролёр и ассистент в одном контуре. За решениями стоит мультиагентная
-              аналитическая сеть под наблюдением инженеров и юристов: она собирает данные о ходе работ, держит связь с
-              исполнителями, ведёт CRM с уведомлениями и показывает объект наглядно — от первой идеи до ввода в
-              эксплуатацию.
+              Контур растёт вместе с объектом. Начинается с расчётов и норм, превращается в рабочее пространство с
+              документами, аналитикой и командой, а на сложных участках подключается живая поддержка инженеров. Всё
+              собрано в одном месте: от первой идеи до ввода в эксплуатацию.
             </p>
           </div>
         </Reveal>
+
+        <div className="mt-12 grid gap-4 lg:grid-cols-3">
+          {CONTOUR.map((c, i) => (
+            <Reveal key={c.title} delay={i * 80}>
+              <div
+                className="flex h-full flex-col rounded-2xl border p-7"
+                style={{ borderColor: c.accent ? 'hsl(var(--primary) / 0.4)' : undefined }}
+              >
+                <span className="flex items-center gap-2.5">
+                  <span
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
+                    style={{ background: c.bg }}
+                  >
+                    <Icon name={c.icon} size={17} style={{ color: c.fg }} />
+                  </span>
+                  <span className="font-display text-[1.15rem] leading-tight text-foreground">{c.title}</span>
+                </span>
+                <p className="mt-3 text-[0.84rem] leading-relaxed text-muted-foreground">{c.note}</p>
+                <ul className="mt-5 space-y-2 border-t border-border pt-5">
+                  {c.items.map((it) => (
+                    <li key={it} className="flex items-center gap-2.5 text-[0.88rem] text-foreground/85">
+                      <Icon name="Check" size={14} className="shrink-0" style={{ color: c.fg }} />
+                      {it}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Reveal>
+          ))}
+        </div>
 
         {premium ? (
           <Reveal>
