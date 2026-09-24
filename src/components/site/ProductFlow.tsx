@@ -159,16 +159,16 @@ const ProductFlow = ({ product, onClose, onPay, onRequest, busy }: Props) => {
             {product.swarm ? (
               <div className="mt-6 rounded-xl border border-border bg-muted/40 px-4 py-3.5">
                 <p className="flex items-center gap-2 text-[0.86rem] font-medium text-foreground">
-                  <Icon name="Wallet" size={16} className="text-primary" />
-                  Кошелёк с токенами
+                  <Icon name="Clock" size={16} className="text-primary" />
+                  Почасовая оплата
                 </p>
                 <p className="mt-1.5 text-[0.82rem] leading-relaxed text-muted-foreground">
-                  Фиксированной стоимости нет: агенты работают по мере задач. Для запуска пополните кошелёк — расход
-                  токенов виден по каждой задаче, остаток не сгорает.
+                  Фиксированной цены нет: агенты работают по мере задач, оплата почасовая. Пополните баланс для
+                  запуска — отработанное время видно по каждой задаче, остаток не сгорает.
                 </p>
                 <label className="mt-3 block">
                   <span className="block text-[0.72rem] uppercase tracking-[0.14em] text-muted-foreground">
-                    Сумма пополнения, ₽
+                    Сумма пополнения баланса, ₽
                   </span>
                   <input
                     value={sum}
@@ -210,7 +210,7 @@ const ProductFlow = ({ product, onClose, onPay, onRequest, busy }: Props) => {
                   : product.donate
                     ? `Внести${Number(sum) > 0 ? ` ${Number(sum).toLocaleString('ru-RU')} ₽` : ''}`
                     : product.swarm
-                      ? `Пополнить кошелёк${Number(sum) > 0 ? ` на ${Number(sum).toLocaleString('ru-RU')} ₽` : ''}`
+                      ? `Пополнить баланс${Number(sum) > 0 ? ` на ${Number(sum).toLocaleString('ru-RU')} ₽` : ''}`
                       : 'Оформить'}
               </button>
               <button onClick={onClose} className="rounded-full border border-border px-8 py-4 text-[0.86rem] text-foreground">
